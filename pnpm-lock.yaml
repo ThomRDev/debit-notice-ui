@@ -23,6 +23,9 @@ importers:
       axios:
         specifier: ^1.8.4
         version: 1.8.4
+      debit-notice-ui:
+        specifier: 'file:'
+        version: file:(@types/react@19.0.12)(vite@6.2.3(jiti@2.4.2)(lightningcss@1.29.2))
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@19.0.0)
@@ -38,9 +41,6 @@ importers:
       react-router:
         specifier: ^7.4.0
         version: 7.4.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      tailwindcss:
-        specifier: ^4.0.17
-        version: 4.0.17
       yup:
         specifier: ^1.6.1
         version: 1.6.1
@@ -737,6 +737,9 @@ packages:
 
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
+
+  'debit-notice-ui@file:':
+    resolution: {directory: '', type: directory}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -1921,6 +1924,27 @@ snapshots:
       which: 2.0.2
 
   csstype@3.1.3: {}
+
+  debit-notice-ui@file:(@types/react@19.0.12)(vite@6.2.3(jiti@2.4.2)(lightningcss@1.29.2)):
+    dependencies:
+      '@heroicons/react': 2.2.0(react@19.0.0)
+      '@tailwindcss/vite': 4.0.17(vite@6.2.3(jiti@2.4.2)(lightningcss@1.29.2))
+      '@tanstack/react-query': 5.69.0(react@19.0.0)
+      '@tanstack/react-query-devtools': 5.69.0(@tanstack/react-query@5.69.0(react@19.0.0))(react@19.0.0)
+      axios: 1.8.4
+      formik: 2.4.6(react@19.0.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      react-hot-toast: 2.5.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react-router: 7.4.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      yup: 1.6.1
+      zustand: 5.0.3(@types/react@19.0.12)(react@19.0.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - debug
+      - immer
+      - use-sync-external-store
+      - vite
 
   debug@4.4.0:
     dependencies:
