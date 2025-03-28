@@ -3,11 +3,16 @@ import {
   FolderArrowDownIcon,
   PrinterIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useDebitNoticeDetail } from "../hooks/useDebitNoticeDetail";
+import DebtNoticeSkeleton from "../components/DebtNoticeSkeleton";
 
 export const DebitNoticeDetailPage = () => {
   const navigate = useNavigate();
+  const { nAviso } = useParams();
+  const { data, isLoading } = useDebitNoticeDetail({ nAviso: nAviso! });
 
+  if (isLoading) return <DebtNoticeSkeleton />;
   return (
     <div className="container mx-auto px-4">
       {/* Header with Back and Status */}

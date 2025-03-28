@@ -1,6 +1,10 @@
 import { useDebitNotices } from "../hooks/useDebitNotices";
 
-import { EyeIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  FolderArrowDownIcon,
+  PrinterIcon,
+} from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 
 export const TableDebit = () => {
@@ -158,11 +162,11 @@ export const TableDebit = () => {
             <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">
               Anular
             </button>
-            <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
-              Imprimir
+            <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
+              <PrinterIcon className="h-4 w-4 mr-2" /> Imprimir
             </button>
-            <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
-              Exportar
+            <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
+              <FolderArrowDownIcon className="h-4 w-4 mr-2" /> Exportar
             </button>
           </div>
         </div>
