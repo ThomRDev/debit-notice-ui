@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { SearchParams, useSearchStore } from "../store/debitNotices.store";
+import { SearchParams, useSearchStore } from "../store/useDebitNotices.store";
 import DebitServiceApi from "../config/api";
 
 const buildQueryParams = (params: SearchParams): string => {

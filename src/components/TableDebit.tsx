@@ -1,10 +1,13 @@
 import { useDebitNotices } from "../hooks/useDebitNotices";
 
 import { EyeIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router";
 
 export const TableDebit = () => {
   const { data, isLoading, error } = useDebitNotices();
   console.log("🚀 ~ TableDebit ~ data:", data);
+
+  const navigate = useNavigate();
 
   const invoices = [
     {
@@ -133,7 +136,15 @@ export const TableDebit = () => {
                   </span>
                 </td>
                 <td className="p-3 text-sm text-gray-500 flex justify-center">
-                  <EyeIcon className="size-6" title="Ver detalle" />
+                  <EyeIcon
+                    className="size-6"
+                    title="Ver detalle"
+                    onClick={() => {
+                      navigate(
+                        `/gestion-comercial/avisos-debito/${invoice.nAviso}`
+                      );
+                    }}
+                  />
                 </td>
               </tr>
             ))}

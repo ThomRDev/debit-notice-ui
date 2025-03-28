@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useSearchStore } from "../store/debitNotices.store";
+import { useSearchStore } from "../store/useDebitNotices.store";
 
 const Schemabusqueda = Yup.object().shape({
   numero_aviso: Yup.string().required("(*) El numero_aviso es obligatorio"),
