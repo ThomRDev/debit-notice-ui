@@ -1,5 +1,7 @@
 import { useDebitNotices } from "../hooks/useDebitNotices";
 
+import { EyeIcon } from "@heroicons/react/24/outline";
+
 export const TableDebit = () => {
   const { data, isLoading, error } = useDebitNotices();
   console.log("🚀 ~ TableDebit ~ data:", data);
@@ -97,6 +99,9 @@ export const TableDebit = () => {
               <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Estado
               </th>
+              <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -126,6 +131,9 @@ export const TableDebit = () => {
                   >
                     {invoice.estado}
                   </span>
+                </td>
+                <td className="p-3 text-sm text-gray-500 flex justify-center">
+                  <EyeIcon className="size-6" title="Ver detalle" />
                 </td>
               </tr>
             ))}
