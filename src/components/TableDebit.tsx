@@ -1,4 +1,9 @@
+import { useDebitNotices } from "../hooks/useDebitNotices";
+
 export const TableDebit = () => {
+  const { data, isLoading, error } = useDebitNotices();
+  console.log("🚀 ~ TableDebit ~ data:", data);
+
   const invoices = [
     {
       nAviso: "AD-0001",

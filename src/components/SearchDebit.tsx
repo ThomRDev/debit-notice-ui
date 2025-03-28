@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useSearchStore } from "../store/debitNotices.store";
 
 const Schemabusqueda = Yup.object().shape({
   numero_aviso: Yup.string().required("(*) El numero_aviso es obligatorio"),
@@ -22,27 +23,18 @@ const Schemabusqueda = Yup.object().shape({
 });
 
 export const SearchDebit = () => {
-  const valoresIniciales = {
-    numero_aviso: "",
-    estado: "Todos",
-    numero_sap: "",
-    usuario_creador: "",
-    fecha_desde: "",
-    fecha_hasta: "",
-    moneda: "Todas",
-    importe_desde: "0.00",
-    importe_hasta: "0.00",
-    cliente: "",
-  };
+  const { searchParams, updateSearchParams, resetSearchParams } =
+    useSearchStore();
+  console.log("🚀 ~ SearchDebit ~ searchParams:", searchParams);
 
   const manejarEnvio = (valores, { setSubmitting }) => {
-    console.log(valores);
+    updateSearchParams(valores);
   };
   return (
     <div className="p-4 bg-white">
       <h2 className="text-lg font-semibold mb-4">Buscar Avisos</h2>
       <Formik
-        initialValues={valoresIniciales}
+        initialValues={searchParams}
         validationSchema={Schemabusqueda}
         onSubmit={manejarEnvio}
       >
@@ -269,7 +261,23 @@ export const SearchDebit = () => {
               </button>
               <button
                 type="button"
-                onClick={() => resetForm()}
+                onClick={() => {
+                  resetSearchParams();
+                  resetForm({
+                    values: {
+                      numero_aviso: "",
+                      estado: "Todos",
+                      numero_sap: "",
+                      usuario_creador: "",
+                      fecha_desde: "",
+                      fecha_hasta: "",
+                      moneda: "Todas",
+                      importe_desde: "0.00",
+                      importe_hasta: "0.00",
+                      cliente: "",
+                    },
+                  });
+                }}
                 className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 h-[42px]"
               >
                 Limpiar
