@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useDebitNotices } from "../hooks/useDebitNotices";
+import { formatDate } from "../utils/dateUtils";
 
 import {
   EyeIcon,
@@ -7,18 +9,44 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
-export const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("es-ES", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-};
+
+interface DebitNotice {
+  numero_aviso: string;
+  fecha_emision: string;
+  cliente: string;
+  importe_total: number;
+  numero_sap: string | null;
+  estado: string;
+}
+
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
-  console.log("🚀 ~ TableDebit ~ data:", data);
+  const [selectedNotices, setSelectedNotices] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return <DebtNoticesTableSkeleton />;
+  }
+
+  const allSelected = selectedNotices.length === data.length && data.length > 0;
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedNotices([]);
+    } else {
+      setSelectedNotices(
+        data.map((notice: DebitNotice) => notice.numero_aviso)
+      );
+    }
+  };
+
+  const toggleSelectOne = (numero_aviso: string) => {
+    setSelectedNotices((prev) =>
+      prev.includes(numero_aviso)
+        ? prev.filter((id) => id !== numero_aviso)
+        : [...prev, numero_aviso]
+    );
+  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -34,9 +62,7 @@ export const TableDebit = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
-  if (isLoading) {
-    return <DebtNoticesTableSkeleton />;
-  }
+
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -47,6 +73,8 @@ export const TableDebit = () => {
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-blue-600"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
                 />
               </th>
               <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -73,13 +101,14 @@ export const TableDebit = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {data.map((debitNotice, index) => (
+            {data.map((debitNotice: DebitNotice) => (
               <tr key={debitNotice.numero_aviso} className="hover:bg-gray-50">
                 <td className="p-3">
                   <input
                     type="checkbox"
                     className="form-checkbox h-4 w-4 text-blue-600"
-                    defaultChecked={index < 2}
+                    checked={selectedNotices.includes(debitNotice.numero_aviso)}
+                    onChange={() => toggleSelectOne(debitNotice.numero_aviso)}
                   />
                 </td>
                 <td className="p-3 text-sm font-medium text-gray-900">
@@ -108,7 +137,7 @@ export const TableDebit = () => {
                 </td>
                 <td className="p-3 text-sm text-gray-500 flex justify-center">
                   <EyeIcon
-                    className="size-6"
+                    className="size-6 cursor-pointer"
                     title="Ver detalle"
                     onClick={() => {
                       navigate(
