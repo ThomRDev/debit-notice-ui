@@ -7,7 +7,7 @@ export const CommercialManagementLayout = () => {
   const isActive = (path: string) => pathname.startsWith(path);
 
   return (
-    <div className="flex flex-col w-full md:w-[900px] mx-auto shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+    <div className="flex flex-col w-full md:w-[950px] mx-auto shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
       <header className="bg-[#1E68CA] text-white text-xl font-bold px-4 py-2">
         Sistema de Gestión Comercial
       </header>

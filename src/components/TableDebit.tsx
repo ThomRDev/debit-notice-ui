@@ -6,76 +6,37 @@ import {
   PrinterIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
-
+import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
 export const TableDebit = () => {
-  const { data, isLoading, error } = useDebitNotices();
+  const { data, isLoading } = useDebitNotices();
   console.log("🚀 ~ TableDebit ~ data:", data);
-
   const navigate = useNavigate();
 
-  const invoices = [
-    {
-      nAviso: "AD-0001",
-      fecha: "15/03/2025",
-      cliente: "TRANSPORTES S.A",
-      ruc: "20512345678",
-      importe: 1250.0,
-      nSap: "",
-      estado: "Borrador",
-    },
-    {
-      nAviso: "AD-0002",
-      fecha: "14/03/2025",
-      cliente: "SERVICIOS GENERA",
-      ruc: "20523456789",
-      importe: 850.5,
-      nSap: "",
-      estado: "Pendiente",
-    },
-    {
-      nAviso: "AD-0003",
-      fecha: "12/03/2025",
-      cliente: "DISTRIBUIDORA PER",
-      ruc: "20523456789",
-      importe: 425.8,
-      nSap: "",
-      estado: "Pendiente",
-    },
-    {
-      nAviso: "AD-0004",
-      fecha: "10/03/2025",
-      cliente: "INVERSIONES ABC",
-      ruc: "20534567890",
-      importe: 1750.0,
-      nSap: "402587",
-      estado: "Migrado",
-    },
-    {
-      nAviso: "AD-0005",
-      fecha: "07/03/2025",
-      cliente: "COMERCIAL XYZ",
-      ruc: "20645678901",
-      importe: 320.0,
-      nSap: "402342",
-      estado: "Anulado",
-    },
-  ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Borrador":
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "borrador":
         return "bg-yellow-100 text-yellow-800";
-      case "Pendiente":
+      case "pendiente":
         return "bg-yellow-100 text-yellow-800";
-      case "Migrado":
+      case "migrado":
         return "bg-green-100 text-green-800";
-      case "Anulado":
+      case "anulado":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
-
+  if (isLoading) {
+    return <DebtNoticesTableSkeleton />;
+  }
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -112,8 +73,8 @@ export const TableDebit = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {invoices.map((invoice, index) => (
-              <tr key={invoice.nAviso} className="hover:bg-gray-50">
+            {data.map((debitNotice, index) => (
+              <tr key={debitNotice.numero_aviso} className="hover:bg-gray-50">
                 <td className="p-3">
                   <input
                     type="checkbox"
@@ -122,21 +83,27 @@ export const TableDebit = () => {
                   />
                 </td>
                 <td className="p-3 text-sm font-medium text-gray-900">
-                  {invoice.nAviso}
+                  {debitNotice.numero_aviso}
                 </td>
-                <td className="p-3 text-sm text-gray-500">{invoice.fecha}</td>
-                <td className="p-3 text-sm text-gray-500">{invoice.cliente}</td>
                 <td className="p-3 text-sm text-gray-500">
-                  S/ {invoice.importe.toFixed(2)}
+                  {formatDate(debitNotice.fecha_emision)}
                 </td>
-                <td className="p-3 text-sm text-gray-500">{invoice.nSap}</td>
+                <td className="p-3 text-sm text-gray-500 text-[13px]">
+                  {debitNotice.cliente}
+                </td>
+                <td className="p-3 text-sm text-gray-500">
+                  S/ {debitNotice.importe_total.toFixed(2)}
+                </td>
+                <td className="p-3 text-sm text-gray-500 text-center">
+                  {debitNotice.numero_sap ?? "-"}
+                </td>
                 <td className="p-3">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                      invoice.estado
+                      debitNotice.estado
                     )}`}
                   >
-                    {invoice.estado}
+                    {debitNotice.estado.toLowerCase()}
                   </span>
                 </td>
                 <td className="p-3 text-sm text-gray-500 flex justify-center">
@@ -145,7 +112,7 @@ export const TableDebit = () => {
                     title="Ver detalle"
                     onClick={() => {
                       navigate(
-                        `/gestion-comercial/avisos-debito/${invoice.nAviso}`
+                        `/gestion-comercial/avisos-debito/${debitNotice.numero_aviso}`
                       );
                     }}
                   />

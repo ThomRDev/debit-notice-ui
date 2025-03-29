@@ -3,42 +3,87 @@ import * as Yup from "yup";
 import { useSearchStore } from "../store/useDebitNotices.store";
 
 const Schemabusqueda = Yup.object().shape({
-  numero_aviso: Yup.string().required("(*) El numero_aviso es obligatorio"),
+  numero_aviso: Yup.string().test(
+    "numero_aviso",
+    "(*) Ingresa al menos un criterio",
+    function (value) {
+      const { numero_sap, usuario_creador, cliente } = this.parent;
+      return (
+        Boolean(value?.trim()) ||
+        Boolean(numero_sap?.trim()) ||
+        Boolean(usuario_creador?.trim()) ||
+        Boolean(cliente?.trim())
+      );
+    }
+  ),
+  numero_sap: Yup.string().test(
+    "numero_sap",
+    "(*) Ingresa al menos un criterio",
+    function (value) {
+      const { numero_aviso, usuario_creador, cliente } = this.parent;
+      return (
+        Boolean(value?.trim()) ||
+        Boolean(numero_aviso?.trim()) ||
+        Boolean(usuario_creador?.trim()) ||
+        Boolean(cliente?.trim())
+      );
+    }
+  ),
+  usuario_creador: Yup.string().test(
+    "usuario_creador",
+    "(*) Ingresa al menos un criterio",
+    function (value) {
+      const { numero_aviso, numero_sap, cliente } = this.parent;
+      return (
+        Boolean(value?.trim()) ||
+        Boolean(numero_aviso?.trim()) ||
+        Boolean(numero_sap?.trim()) ||
+        Boolean(cliente?.trim())
+      );
+    }
+  ),
+  cliente: Yup.string().test(
+    "cliente",
+    "(*) Ingresa al menos un criterio",
+    function (value) {
+      const { numero_aviso, numero_sap, usuario_creador } = this.parent;
+      return (
+        Boolean(value?.trim()) ||
+        Boolean(numero_aviso?.trim()) ||
+        Boolean(numero_sap?.trim()) ||
+        Boolean(usuario_creador?.trim())
+      );
+    }
+  ),
+  fecha_desde: Yup.string(),
+  fecha_hasta: Yup.string(),
   estado: Yup.string()
     .required("(*) Estado no válido")
     .oneOf(
       ["Todos", "Borrador", "Pendiente", "Migrado", "Anulado"],
       "(*) Estado no válido"
     ),
-  numero_sap: Yup.string().required("(*) El numero_sap es obligatorio"),
-  usuario_creador: Yup.string().required(
-    "(*) El usuario_creador es obligatorio"
-  ),
-  cliente: Yup.string().required("(*) El cliente es obligatorio"),
-  fecha_desde: Yup.string().required("(*) La fecha_desde es obligatoria"),
-  fecha_hasta: Yup.string().required("(*) La fecha_hasta es obligatoria"),
   moneda: Yup.string()
     .required("(*) La moneda no es válida")
     .oneOf(["Todas", "USD", "EUR"], "(*) La moneda no es válida"),
+  importe_desde: Yup.number(),
+  importe_hasta: Yup.number(),
 });
 
 export const SearchDebit = () => {
   const { searchParams, updateSearchParams, resetSearchParams } =
     useSearchStore();
-  console.log("🚀 ~ SearchDebit ~ searchParams:", searchParams);
-
-  const manejarEnvio = (valores, { setSubmitting }) => {
-    updateSearchParams(valores);
-  };
   return (
     <div className="p-4 bg-white">
       <h2 className="text-lg font-semibold mb-4">Buscar Avisos</h2>
       <Formik
         initialValues={searchParams}
         validationSchema={Schemabusqueda}
-        onSubmit={manejarEnvio}
+        onSubmit={(valores) => {
+          updateSearchParams(valores);
+        }}
       >
-        {({ isSubmitting, resetForm }) => (
+        {({ resetForm }) => (
           <Form className="grid grid-cols-4 gap-4">
             <div className="col-span-1">
               <label
