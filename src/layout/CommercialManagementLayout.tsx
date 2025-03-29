@@ -1,15 +1,24 @@
 import { Link, Outlet, useLocation } from "react-router";
-
+import useUserManagementStore from "../store/useUserManagement.store";
 export const CommercialManagementLayout = () => {
   const location = useLocation();
   const { pathname } = location;
-
+  const { name } = useUserManagementStore();
   const isActive = (path: string) => pathname.startsWith(path);
 
   return (
     <div className="flex flex-col w-full md:w-[950px] mx-auto shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-      <header className="bg-[#1E68CA] text-white text-xl font-bold px-4 py-2">
-        Sistema de Gestión Comercial
+      <header className="bg-[#1E68CA] text-white text-xl font-bold px-4 py-2 flex justify-between">
+        <span>Sistema de Gestión Comercial</span>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">{name}</span>
+          {/* Círculo de estado parpadeante */}
+          <div className="relative w-2 h-2">
+            <div className="absolute inset-0 bg-green-500 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 bg-green-500 rounded-full"></div>
+          </div>
+        </div>
       </header>
       <nav className="px-7 py-3">
         <div className="flex ">

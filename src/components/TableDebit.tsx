@@ -9,6 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
+import useUserManagementStore from "../store/useUserManagement.store";
+import toast from "react-hot-toast";
+import { useChangeStateDebitNote } from "../hooks/useChangeStateDebitNote";
 
 interface DebitNotice {
   numero_aviso: string;
@@ -21,8 +24,40 @@ interface DebitNotice {
 
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
+  const { id } = useUserManagementStore();
   const [selectedNotices, setSelectedNotices] = useState<string[]>([]);
   const navigate = useNavigate();
+  const { mutate: changeStateDebitNote, isPending } = useChangeStateDebitNote();
+
+  const onMigrate = () => {
+    if (selectedNotices.length === 0) {
+      toast("No se puede migrar, no hay avisos seleccionados", {
+        icon: "🚨",
+        duration: 4000,
+      });
+      return;
+    }
+    changeStateDebitNote({
+      usuario_modificador: id,
+      estado_final: "MIGRADO",
+      avisos: selectedNotices,
+    });
+  };
+
+  const onAnular = () => {
+    if (selectedNotices.length === 0) {
+      toast("No se puede anular, no hay avisos seleccionados", {
+        icon: "🚨",
+        duration: 4000,
+      });
+      return;
+    }
+    changeStateDebitNote({
+      usuario_modificador: id,
+      estado_final: "ANULADO",
+      avisos: selectedNotices,
+    });
+  };
 
   if (isLoading) {
     return <DebtNoticesTableSkeleton />;
@@ -152,10 +187,18 @@ export const TableDebit = () => {
         </table>
         <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <div className="flex space-x-2">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              onClick={onMigrate}
+              disabled={isPending}
+            >
               Migrar a SAP
             </button>
-            <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+              onClick={onAnular}
+              disabled={isPending}
+            >
               Anular
             </button>
             <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
