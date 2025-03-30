@@ -6,11 +6,25 @@ import {
 import { useNavigate, useParams } from "react-router";
 import { useDebitNoticeDetail } from "../hooks/useDebitNoticeDetail";
 import DebtNoticeSkeleton from "../components/DebtNoticeSkeleton";
-
+import capitalize from "capitalize";
+const getStatusColor = (status: string) => {
+  const statusMap = {
+    borrador: "bg-yellow-100 text-yellow-800",
+    pendiente: "bg-yellow-100 text-yellow-800",
+    migrado: "bg-green-100 text-green-800",
+    anulado: "bg-red-100 text-red-800",
+    cancelado: "bg-red-100 text-red-800",
+  } as const;
+  return (
+    statusMap[status.toLowerCase() as keyof typeof statusMap] ||
+    "bg-gray-100 text-gray-800"
+  );
+};
 export const DebitNoticeDetailPage = () => {
   const navigate = useNavigate();
   const { nAviso } = useParams();
   const { data, isLoading } = useDebitNoticeDetail({ nAviso: nAviso! });
+  console.log("🚀 ~ DebitNoticeDetailPage ~ data:", data);
 
   if (isLoading) return <DebtNoticeSkeleton />;
   return (
@@ -24,10 +38,18 @@ export const DebitNoticeDetailPage = () => {
           >
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
-          <h2 className="text-xl font-semibold">N° AD-0004 | N° SAP: 400287</h2>
+          <h2 className="text-xl font-semibold">
+            N° {data.aviso_debito.numero_aviso}
+            {data.aviso_debito.numero_sap &&
+              " | N° SAP:" + data.aviso_debito.numero_sap}
+          </h2>
         </div>
-        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-          Migrado
+        <span
+          className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+            data.aviso_debito.estado
+          )}`}
+        >
+          {capitalize(data.aviso_debito.estado)}
         </span>
       </div>
 
@@ -39,23 +61,36 @@ export const DebitNoticeDetailPage = () => {
             <div>
               <p className="mb-2">
                 <span className="font-semibold">Fecha de emisión:</span>{" "}
-                10/03/2025
+                {new Intl.DateTimeFormat("es-PE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                }).format(new Date(data.aviso_debito.fecha_emision))}
               </p>
               <p className="mb-2">
                 <span className="font-semibold">Usuario creador:</span>{" "}
-                JRODRIGUEZ
+                {data.aviso_debito.usuario_creador}
               </p>
             </div>
             <div className="text-right">
               <p className="mb-2">
-                <span className="font-semibold">Moneda:</span> PEN - Sol Peruano
+                <span className="font-semibold">Moneda:</span>{" "}
+                {data.aviso_debito.moneda}
               </p>
               <p className="mb-2">
-                <span className="font-semibold">Tipo de cambio:</span> 3.75
+                <span className="font-semibold">Tipo de cambio:</span>{" "}
+                {data.aviso_debito.tipo_cambio_moneda}
               </p>
               <p className="mb-2">
                 <span className="font-semibold">Fecha de creación:</span>{" "}
-                10/03/2025 14:00:42
+                {new Intl.DateTimeFormat("es-PE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                }).format(new Date(data.aviso_debito.fecha_creation))}
               </p>
             </div>
           </div>
@@ -67,18 +102,20 @@ export const DebitNoticeDetailPage = () => {
             <h4 className="font-bold text-md mb-4">INFORMACIÓN DEL CLIENTE</h4>
             <div className="text-sm space-y-2">
               <p>
-                <span className="font-semibold">Cliente:</span> INVERSIONES ABC
+                <span className="font-semibold">Cliente:</span>{" "}
+                {data.aviso_debito.cliente}
               </p>
               <p>
-                <span className="font-semibold">RUC:</span> 20534567890
+                <span className="font-semibold">RUC:</span>{" "}
+                {data.aviso_debito.ruc}
               </p>
               <p>
-                <span className="font-semibold">Dirección:</span> Av Principal
-                123, Lima, Perú
+                <span className="font-semibold">Dirección:</span>{" "}
+                {data.aviso_debito.direccion}
               </p>
               <p>
-                <span className="font-semibold">Contacto:</span> Juan Martinez -
-                Gerente Comercial
+                <span className="font-semibold">Contacto:</span>{" "}
+                {data.aviso_debito.contacto}
               </p>
             </div>
           </div>
@@ -87,14 +124,19 @@ export const DebitNoticeDetailPage = () => {
             <div className="text-sm space-y-2">
               <p>
                 <span className="font-semibold">Importe total:</span> S/
-                1,750.00
+                {data.aviso_debito.importe_total}
               </p>
               <p>
                 <span className="font-semibold">Condición de pago:</span> 30
                 dias
               </p>
               <p>
-                <span className="font-semibold">Migrado a SAP:</span> Sí
+                <span className="font-semibold">Migrado a SAP:</span>{" "}
+                {data.aviso_debito.numero_sap
+                  ? data.aviso_debito.estado === "ANULADO"
+                    ? "Si - anulado"
+                    : "Sí"
+                  : "No"}
               </p>
               <p>
                 <span className="font-semibold">Fecha de migración:</span>{" "}
@@ -104,7 +146,6 @@ export const DebitNoticeDetailPage = () => {
           </div>
         </div>
 
-        {/* Detalles del Aviso */}
         <div className="mb-6">
           <h4 className="font-bold text-md mb-4">DETALLE DEL AVISO</h4>
           <table className="w-full text-sm border-collapse">
@@ -152,17 +193,11 @@ export const DebitNoticeDetailPage = () => {
           </table>
         </div>
 
-        {/* Observaciones */}
         <div className="mb-6">
           <h4 className="font-bold text-md mb-4">OBSERVACIONES</h4>
-          <p className="text-sm">
-            Servicio de transporte realizado para traslado de equipos y personal
-            a la sede de Cusco. Incluye viáticos y gastos adicionales del
-            personal
-          </p>
+          <p className="text-sm">{data.aviso_debito.observaciones}</p>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-end space-x-4">
           <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm">
             Anular en SAP
