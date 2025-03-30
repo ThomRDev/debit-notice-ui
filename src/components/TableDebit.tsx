@@ -27,7 +27,8 @@ export const TableDebit = () => {
   const { id } = useUserManagementStore();
   const [selectedNotices, setSelectedNotices] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { mutate: changeStateDebitNote, isPending } = useChangeStateDebitNote();
+  const { mutateAsync: changeStateDebitNote, isPending } =
+    useChangeStateDebitNote();
 
   const onMigrate = () => {
     if (selectedNotices.length === 0) {
@@ -37,10 +38,17 @@ export const TableDebit = () => {
       });
       return;
     }
-    changeStateDebitNote({
+
+    const changeStateDebitNotePromise = changeStateDebitNote({
       usuario_modificador: id,
       estado_final: "MIGRADO",
       avisos: selectedNotices,
+    });
+
+    toast.promise(changeStateDebitNotePromise, {
+      loading: "Cambiando estado...",
+      success: (data) => "Estado cambiado con éxito",
+      error: (err) => err.response?.data?.message || "Error al cambiar estado",
     });
   };
 
@@ -52,10 +60,16 @@ export const TableDebit = () => {
       });
       return;
     }
-    changeStateDebitNote({
+    const changeStateDebitNotePromise = changeStateDebitNote({
       usuario_modificador: id,
       estado_final: "ANULADO",
       avisos: selectedNotices,
+    });
+
+    toast.promise(changeStateDebitNotePromise, {
+      loading: "Cambiando estado...",
+      success: (data) => "Estado cambiado con éxito",
+      error: (err) => err.response?.data?.message || "Error al cambiar estado",
     });
   };
 
