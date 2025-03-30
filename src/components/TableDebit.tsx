@@ -12,8 +12,11 @@ import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
 import useUserManagementStore from "../store/useUserManagement.store";
 import toast from "react-hot-toast";
 import { useChangeStateDebitNote } from "../hooks/useChangeStateDebitNote";
+import useModalStore from "../store/useModalStore.store";
+import AnularAvisosSAP from "./AnularAvisosSAP";
+import MigrarAvisosSAP from "./MigrarAvisosSAP";
 
-interface DebitNotice {
+export interface DebitNotice {
   numero_aviso: string;
   fecha_emision: string;
   cliente: string;
@@ -24,51 +27,50 @@ interface DebitNotice {
 
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
+
+  const { openModal } = useModalStore();
   const { id } = useUserManagementStore();
-  const [selectedNotices, setSelectedNotices] = useState<string[]>([]);
+  const [selectedNotices, setSelectedNotices] = useState<DebitNotice[]>([]);
+  console.log("🚀 ~ TableDebit ~ selectedNotices:", selectedNotices);
   const navigate = useNavigate();
   const { mutateAsync: changeStateDebitNote, isPending } =
     useChangeStateDebitNote();
 
-  const onMigrate = () => {
-    if (selectedNotices.length === 0) {
-      toast("No se puede migrar, no hay avisos seleccionados", {
-        icon: "🚨",
-        duration: 4000,
-      });
-      return;
-    }
-
+  const onMigrate = (avisos: string[], close: () => void) => {
     const changeStateDebitNotePromise = changeStateDebitNote({
       usuario_modificador: id,
       estado_final: "MIGRADO",
-      avisos: selectedNotices,
+      avisos,
     });
 
     toast.promise(changeStateDebitNotePromise, {
       loading: "Cambiando estado...",
-      success: (data) => "Estado cambiado con éxito",
+      success: (data) => {
+        console.log(data);
+        setSelectedNotices([]);
+        close();
+        return "Estado cambiado con éxito";
+      },
       error: (err) => err.response?.data?.message || "Error al cambiar estado",
     });
   };
 
-  const onAnular = () => {
-    if (selectedNotices.length === 0) {
-      toast("No se puede anular, no hay avisos seleccionados", {
-        icon: "🚨",
-        duration: 4000,
-      });
-      return;
-    }
+  const onAnular = (avisos: string[], motivo: string, close: () => void) => {
     const changeStateDebitNotePromise = changeStateDebitNote({
       usuario_modificador: id,
       estado_final: "ANULADO",
-      avisos: selectedNotices,
+      avisos,
+      motivo,
     });
 
     toast.promise(changeStateDebitNotePromise, {
       loading: "Cambiando estado...",
-      success: (data) => "Estado cambiado con éxito",
+      success: (data) => {
+        console.log(data);
+        setSelectedNotices([]);
+        close();
+        return "Estado cambiado con éxito";
+      },
       error: (err) => err.response?.data?.message || "Error al cambiar estado",
     });
   };
@@ -83,17 +85,15 @@ export const TableDebit = () => {
     if (allSelected) {
       setSelectedNotices([]);
     } else {
-      setSelectedNotices(
-        data.map((notice: DebitNotice) => notice.numero_aviso)
-      );
+      setSelectedNotices(data);
     }
   };
 
-  const toggleSelectOne = (numero_aviso: string) => {
+  const toggleSelectOne = (deb: DebitNotice) => {
     setSelectedNotices((prev) =>
-      prev.includes(numero_aviso)
-        ? prev.filter((id) => id !== numero_aviso)
-        : [...prev, numero_aviso]
+      prev.some((notice) => notice.numero_aviso === deb.numero_aviso)
+        ? prev.filter((notice) => notice.numero_aviso !== deb.numero_aviso)
+        : [...prev, deb]
     );
   };
 
@@ -156,8 +156,10 @@ export const TableDebit = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox h-4 w-4 text-blue-600"
-                    checked={selectedNotices.includes(debitNotice.numero_aviso)}
-                    onChange={() => toggleSelectOne(debitNotice.numero_aviso)}
+                    checked={selectedNotices
+                      .map((v) => v.numero_aviso)
+                      .includes(debitNotice.numero_aviso)}
+                    onChange={() => toggleSelectOne(debitNotice)}
                   />
                 </td>
                 <td className="p-3 text-sm font-medium text-gray-900">
@@ -203,14 +205,44 @@ export const TableDebit = () => {
           <div className="flex space-x-2">
             <button
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-              onClick={onMigrate}
+              onClick={() => {
+                if (selectedNotices.length === 0) {
+                  toast("No se puede migrar, no hay avisos seleccionados", {
+                    icon: "🚨",
+                    duration: 4000,
+                  });
+                  return;
+                }
+                openModal("modal-migrate", (close) => (
+                  <MigrarAvisosSAP
+                    onClose={close}
+                    onConfirm={onMigrate}
+                    selectedNotices={selectedNotices}
+                  />
+                ));
+              }}
               disabled={isPending}
             >
               Migrar a SAP
             </button>
             <button
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
-              onClick={onAnular}
+              onClick={() => {
+                if (selectedNotices.length === 0) {
+                  toast("No se puede anular, no hay avisos seleccionados", {
+                    icon: "🚨",
+                    duration: 4000,
+                  });
+                  return;
+                }
+                openModal("modal-anular", (close) => (
+                  <AnularAvisosSAP
+                    onClose={close}
+                    onConfirm={onAnular}
+                    selectedNotices={selectedNotices}
+                  />
+                ));
+              }}
               disabled={isPending}
             >
               Anular

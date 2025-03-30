@@ -5,6 +5,7 @@ interface ChangeStateDebitNote {
   avisos: string[];
   estado_final: string;
   usuario_modificador: string;
+  motivo?: string;
 }
 
 const changeState = async (body: ChangeStateDebitNote) => {
