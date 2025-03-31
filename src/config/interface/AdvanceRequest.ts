@@ -6,6 +6,7 @@ export interface AdvanceRequestData{
     importe:number;
     moneda:string;
     estado:string;
+    motivo:string;
 }
 
 export interface ApiResponse{

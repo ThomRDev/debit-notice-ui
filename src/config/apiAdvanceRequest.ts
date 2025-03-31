@@ -1,5 +1,5 @@
 import axios, {AxiosError} from "axios";
-import { AdvanceRequestData, ApiResponse } from "./interface/AdvanceRequest";
+import { ApiResponse } from "./interface/AdvanceRequest";
 
 const api= axios.create({
     baseURL: "http://localhost:3000/api/advance-request"
@@ -16,9 +16,9 @@ export const AdvanceRequestApi = {
         }
     },
 
-    getByNumber: async(numeroSolicitud:string):Promise<AdvanceRequestData> =>{
+    getByNumber: async(numero_solicitud:string):Promise<ApiResponse> =>{
         try {
-            const response = await api.get(`/${numeroSolicitud}`);
+            const response = await api.get(`/${numero_solicitud}`);
             if (!response.data) {
                 throw new Error("No se encontraron datos en la respuesta");
             }

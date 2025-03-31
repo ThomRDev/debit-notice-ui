@@ -3,6 +3,7 @@ import { CommercialManagementLayout } from "../layout/CommercialManagementLayout
 import { DebitNoticesPage } from "../pages/DebitNoticesPage";
 import { AdvancesPage } from "../pages/AdvancesPage";
 import { DebitNoticeDetailPage } from "../pages/DebitNoticeDetailPage";
+import { DebitNoticeCreate } from "../pages/DebitNoticeCreatePage";
 
 export const Root = () => {
   return (
@@ -30,6 +31,7 @@ export const AppRouter = () => {
               element={<DebitNoticeDetailPage />}
             />
             <Route path="anticipos" element={<AdvancesPage />} />
+            <Route path="debitNoticeCreate" element={<DebitNoticeCreate />} />
           </Route>
         </Route>
       </Routes>
