@@ -1,8 +1,11 @@
 import { Link, Outlet, useLocation } from "react-router";
 import useUserManagementStore from "../store/useUserManagement.store";
+import { useUI } from "../store/useUi.store";
 export const CommercialManagementLayout = () => {
   const location = useLocation();
   const { pathname } = location;
+
+  const { setIsShowEditDebitNotice } = useUI();
   const { name } = useUserManagementStore();
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -23,6 +26,7 @@ export const CommercialManagementLayout = () => {
       <nav className="px-7 py-3">
         <div className="flex ">
           <Link
+            onClick={() => setIsShowEditDebitNotice(false)}
             to="/gestion-comercial"
             className={`hover:text-[#1E68CA] hover:font-bold transition-all w-[10%] text-left ${
               isActive("/gestion-comercial") &&
@@ -35,6 +39,7 @@ export const CommercialManagementLayout = () => {
             Dashboard
           </Link>
           <Link
+            onClick={() => setIsShowEditDebitNotice(false)}
             to="/gestion-comercial/avisos-debito"
             className={`hover:text-[#1E68CA] hover:font-bold transition-all w-[23%] text-center ${
               isActive("/gestion-comercial/avisos-debito")
@@ -45,6 +50,7 @@ export const CommercialManagementLayout = () => {
             Avisos de Débito
           </Link>
           <Link
+            onClick={() => setIsShowEditDebitNotice(false)}
             to="/gestion-comercial/anticipos"
             className={`hover:text-[#1E68CA] hover:font-bold transition-all w-[15%] text-left ${
               isActive("/gestion-comercial/anticipos")

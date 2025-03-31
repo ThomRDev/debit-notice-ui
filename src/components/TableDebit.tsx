@@ -199,10 +199,11 @@ export const TableDebit = () => {
                       );
                     }}
                   />
-                  {debitNotice.estado.toLowerCase() === "borrador" && (
+                  {(debitNotice.estado.toLowerCase() === "borrador" ||
+                    debitNotice.estado.toLowerCase() === "pendiente") && (
                     <PencilSquareIcon
                       className="size-6 cursor-pointer"
-                      title="Edit"
+                      title="Editar"
                       onClick={() => {
                         toogleEditDebitNotice();
                         navigate(
