@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import { useDebitNoticeDetail } from "../hooks/useDebitNoticeDetail";
 import DebtNoticeSkeleton from "../components/DebtNoticeSkeleton";
 import capitalize from "capitalize";
+import { useUI } from "../store/useUi.store";
 const getStatusColor = (status: string) => {
   const statusMap = {
     borrador: "bg-yellow-100 text-yellow-800",
@@ -24,7 +25,8 @@ export const DebitNoticeDetailPage = () => {
   const navigate = useNavigate();
   const { nAviso } = useParams();
   const { data, isLoading } = useDebitNoticeDetail({ nAviso: nAviso! });
-  console.log("🚀 ~ DebitNoticeDetailPage ~ data:", data);
+
+  const { isShowEditDebitNotice, toogleEditDebitNotice } = useUI();
 
   if (isLoading) return <DebtNoticeSkeleton />;
   return (
@@ -34,7 +36,12 @@ export const DebitNoticeDetailPage = () => {
         <div className="flex items-center space-x-4">
           <button
             className="text-gray-600 hover:text-gray-900"
-            onClick={() => navigate("/gestion-comercial/avisos-debito")}
+            onClick={() => {
+              navigate("/gestion-comercial/avisos-debito");
+              if (isShowEditDebitNotice) {
+                toogleEditDebitNotice();
+              }
+            }}
           >
             <ArrowLeftIcon className="h-6 w-6" />
           </button>

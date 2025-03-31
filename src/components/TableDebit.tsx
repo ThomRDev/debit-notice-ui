@@ -6,6 +6,7 @@ import {
   EyeIcon,
   FolderArrowDownIcon,
   PrinterIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
@@ -15,6 +16,7 @@ import { useChangeStateDebitNote } from "../hooks/useChangeStateDebitNote";
 import useModalStore from "../store/useModalStore.store";
 import AnularAvisosSAP from "./AnularAvisosSAP";
 import MigrarAvisosSAP from "./MigrarAvisosSAP";
+import { useUI } from "../store/useUi.store";
 
 export interface DebitNotice {
   numero_aviso: string;
@@ -27,6 +29,7 @@ export interface DebitNotice {
 
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
+  const { toogleEditDebitNotice } = useUI();
 
   const { openModal } = useModalStore();
   const { id } = useUserManagementStore();
@@ -186,7 +189,7 @@ export const TableDebit = () => {
                     {debitNotice.estado.toLowerCase()}
                   </span>
                 </td>
-                <td className="p-3 text-sm text-gray-500 flex justify-center">
+                <td className="p-3 text-sm text-gray-500 flex justify-center gap-3 items-center">
                   <EyeIcon
                     className="size-6 cursor-pointer"
                     title="Ver detalle"
@@ -196,6 +199,18 @@ export const TableDebit = () => {
                       );
                     }}
                   />
+                  {debitNotice.estado.toLowerCase() === "borrador" && (
+                    <PencilSquareIcon
+                      className="size-6 cursor-pointer"
+                      title="Edit"
+                      onClick={() => {
+                        toogleEditDebitNotice();
+                        navigate(
+                          `/gestion-comercial/avisos-debito/${debitNotice.numero_aviso}`
+                        );
+                      }}
+                    />
+                  )}
                 </td>
               </tr>
             ))}
