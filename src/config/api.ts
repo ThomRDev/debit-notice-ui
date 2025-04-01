@@ -14,7 +14,7 @@ export const DebitNoticeApi = {
     bodyDebitDetail: DeviceNoticeDetailData[]
   ): Promise<Array<object>> => {
     try {
-      const response = await DebitServiceApi.post("/create", {
+      const response = await DebitServiceApi.post("/debit-notice/create", {
         bodyDebit,
         bodyDebitDetail,
       });
