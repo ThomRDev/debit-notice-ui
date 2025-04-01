@@ -14,6 +14,7 @@ interface Props {
 
 export const ViewDetailDebit = ({ data }: Props) => {
   const navigate = useNavigate();
+  console.log("🚀 ~ ViewDetailDebit ~ data:", data);
 
   return (
     <>
@@ -120,17 +121,25 @@ export const ViewDetailDebit = ({ data }: Props) => {
                 dias
               </p>
               <p>
-                <span className="font-semibold">Migrado a SAP:</span>{" "}
-                {data.aviso_debito.numero_sap
-                  ? data.aviso_debito.estado === "ANULADO"
-                    ? "Si - anulado"
-                    : "Sí"
-                  : "No"}
+                {(data.aviso_debito.estado === "MIGRADO" ||
+                  data.aviso_debito.estado === "ANULADO") && (
+                  <>
+                    <span className="font-semibold">Migrado a SAP:</span>{" "}
+                    {data.aviso_debito.numero_sap
+                      ? data.aviso_debito.estado === "ANULADO"
+                        ? "Si - anulado"
+                        : "Sí"
+                      : "No"}
+                  </>
+                )}
               </p>
-              <p>
-                <span className="font-semibold">Fecha de migración:</span>{" "}
-                10/03/2025 14:05:30
-              </p>
+              {(data.aviso_debito.estado === "MIGRADO" ||
+                data.aviso_debito.estado === "ANULADO") && (
+                <p>
+                  <span className="font-semibold">Fecha de migración:</span>{" "}
+                  10/03/2025 14:05:30
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -150,18 +159,20 @@ export const ViewDetailDebit = ({ data }: Props) => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border p-2">1</td>
-                <td className="border p-2">Servicio</td>
-                <td className="border p-2">SRV-158</td>
-                <td className="border p-2">
-                  Servicio de transporte Lima-Cus 06/03/2025 - 08/03/2025
-                </td>
-                <td className="border p-2 text-right">1</td>
-                <td className="border p-2 text-right">1,250.00</td>
-                <td className="border p-2 text-right">1,250.00</td>
-              </tr>
-              <tr>
+              {data.detalle_aviso_debito?.map((detalle: any, index: any) => (
+                <tr key={detalle.id}>
+                  <td className="border p-2">{index + 1}</td>
+                  <td className="border p-2">{detalle.tipo_concepto}</td>
+                  <td className="border p-2">{detalle.codigo_concepto}</td>
+                  <td className="border p-2">{detalle.descripcion_concepto}</td>
+                  <td className="border p-2 text-right">{detalle.cantidad}</td>
+                  <td className="border p-2 text-right">
+                    {detalle.precio_unitario}
+                  </td>
+                  <td className="border p-2 text-right">{detalle.importe}</td>
+                </tr>
+              ))}
+              {/* <tr>
                 <td className="border p-2">2</td>
                 <td className="border p-2">Anticipo</td>
                 <td className="border p-2">ANT-2025-004</td>
@@ -171,12 +182,14 @@ export const ViewDetailDebit = ({ data }: Props) => {
                 <td className="border p-2 text-right">1</td>
                 <td className="border p-2 text-right">500.00</td>
                 <td className="border p-2 text-right">500.00</td>
-              </tr>
+              </tr> */}
               <tr className="font-bold">
                 <td colSpan={6} className="border p-2 text-right">
                   Total
                 </td>
-                <td className="border p-2 text-right">1,750.00</td>
+                <td className="border p-2 text-right">
+                  {data.aviso_debito.importe_total}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -188,7 +201,7 @@ export const ViewDetailDebit = ({ data }: Props) => {
         </div>
 
         <div className="flex justify-end space-x-4">
-          {data.aviso_debito.estado === "migrado" && (
+          {data.aviso_debito.estado === "MIGRADO" && (
             <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm">
               Anular en SAP
             </button>
