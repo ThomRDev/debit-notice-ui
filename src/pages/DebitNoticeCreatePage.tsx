@@ -83,9 +83,6 @@ export const DebitNoticeCreate = ()=>{
                                     <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-300">
                                         Anterior
                                     </button>
-                                    <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
-                                        Agregar
-                                    </button>
                                     <button className="text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-100">
                                         Cancelar
                                     </button>

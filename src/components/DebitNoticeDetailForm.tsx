@@ -3,70 +3,105 @@ import { deviceNoticeDetailSchema } from "./ValidationDebitForm";
 import { useAdvanceRequestSelected } from "../store/useAdvanceRequestSelected.store";
 
 export const DebitNoticeDetailForm = ()=>{
-    const { selectedAdvances } = useAdvanceRequestSelected();
+    const {  addDetail,selectedAdvances, details } = useAdvanceRequestSelected();
     const formik = useFormik({
         initialValues: {
           tipo_concepto: '',
-          desc_concepto: '',
-          cantidad: '',
-          precio_uni: '',
-          importe: '',
+          descripcion_concepto: '',
+          cantidad: 0,
+          precio_unitario: 0,
+          importe: 0,
           centro_costo: '',
-          fecha_desde: new Date().toISOString().split('T')[0],
-          fecha_hasta: new Date().toISOString().split('T')[0],
-          observaciones: ''
+          fecha_servicio_desde: new Date().toISOString().split('T')[0],
+          fecha_servicio_hasta: new Date().toISOString().split('T')[0],
+          observaciones: '',
+          unidad_medida:'UND'
         },
         validationSchema: deviceNoticeDetailSchema,
-        onSubmit: (values) => {
-          console.log('Formulario enviado:', values);
+        onSubmit: async (values) => {
+            addDetail(values);
+            formik.resetForm();
         }
       });
+
+      const handleQuantityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        formik.handleChange(e); 
+        const getNumericValue = (value: string | number): number => {
+            return typeof value === 'string' ? parseFloat(value) || 0 : value;
+          };
+        
+          const cantidad = getNumericValue(
+            e.target.name === 'cantidad' ? e.target.value : formik.values.cantidad
+          );
+        
+          const precio = getNumericValue(
+            e.target.name === 'precio_unitario' ? e.target.value : formik.values.precio_unitario
+          );
+        
+          const newImporte = cantidad * precio;
+        
+        formik.setFieldValue('importe', newImporte);
+      };
+    
     return(
         <>
-            <form>
+            <form onSubmit={formik.handleSubmit}>
                 <div className="grid grid-cols-2 gap-4 gap-x-15">
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Tipo de Concepto*</label>
-                        <input
-                        type="date"
+                        <select
                         name="tipo_concepto"
                         onChange={formik.handleChange}
                         value={formik.values.tipo_concepto}
+                        onBlur={formik.handleBlur}
                         className="w-full p-2 border rounded border-gray-400"
-                        />
-                        {formik.errors.tipo_concepto && (
-                        <p className="text-red-500 text-sm">{formik.errors.tipo_concepto}</p>
-                        )}
+                        >
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Servicios">Servicio</option>
+                        <option value="Otros">Otros</option>
+                        </select>
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Descripción del concepto*</label>
                         <input
                         type="text"
-                        name="desc_concepto"
-                        value={formik.values.desc_concepto}
-                        readOnly
-                        className="w-full p-2 border rounded bg-gray-100 border-gray-400"
+                        name="descripcion_concepto"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.descripcion_concepto}
+                        className="w-full p-2 border rounded border-gray-400"
                         />
+                        {formik.errors.descripcion_concepto && (
+                        <p className="text-red-500 text-sm">{formik.errors.descripcion_concepto}</p>
+                        )}
                         </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Cantidad</label>
                         <input
                         type="number"
                         name="cantidad"
+                        onChange={handleQuantityPriceChange}
                         value={formik.values.cantidad}
-                        readOnly
+                        onBlur={formik.handleBlur}
                         className="w-full p-2 border rounded bg-gray-100 border-gray-400"
                         />
+                        {formik.errors.cantidad && (
+                        <p className="text-red-500 text-sm">{formik.errors.cantidad}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Precio Unitario</label>
                         <input
-                        type="text"
-                        name="precio_uni"
-                        value={formik.values.precio_uni}
-                        readOnly
+                        type="number"
+                        name="precio_unitario"
+                        value={formik.values.precio_unitario}
+                        onBlur={formik.handleBlur}
+                        onChange={handleQuantityPriceChange}
                         className="w-full p-2 border rounded bg-gray-100 border-gray-400"
                         />
+                        {formik.errors.precio_unitario && (
+                        <p className="text-red-500 text-sm">{formik.errors.precio_unitario}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600" >Importe</label>
@@ -74,7 +109,7 @@ export const DebitNoticeDetailForm = ()=>{
                         type="text"
                         name="importe"
                         value={formik.values.importe}
-                        readOnly
+                        readOnly 
                         className="w-full p-2 border rounded bg-gray-100 border-gray-400"
                         />
                     </div>
@@ -83,38 +118,43 @@ export const DebitNoticeDetailForm = ()=>{
                         <select
                         name="centro_costo"
                         onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         value={formik.values.centro_costo}
                         className="w-full p-2 border rounded border-gray-400"
                         >
-                        <option value="RRHH">RRHH</option>
-                        <option value="VENTAS">VENTAS</option>
-                        <option value="SISTEMAS">SISTEMAS</option>
+                        <option value="">Seleccione un centro de costo</option>
+                        <option value="Rrhh">RRHH</option>
+                        <option value="Producción">Producción</option>
+                        <option value="Ti">TI - Infraestructura</option>
+                        <option value="Administración">Administración</option>
                         </select>
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Fecha Desde*</label>
                         <input
                         type="date"
-                        name="fecha_desde"
+                        name="fecha_servicio_desde"
                         onChange={formik.handleChange}
-                        value={formik.values.fecha_desde}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.fecha_servicio_desde}
                         className="w-full p-2 border rounded border-gray-400"
                         />
-                        {formik.errors.fecha_desde && (
-                        <p className="text-red-500 text-sm">{formik.errors.fecha_desde}</p>
+                        {formik.errors.fecha_servicio_desde && (
+                        <p className="text-red-500 text-sm">{formik.errors.fecha_servicio_desde}</p>
                         )}
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Fecha Hasta*</label>
                         <input
                         type="date"
-                        name="fecha_hasta"
+                        name="fecha_servicio_hasta"
+                        onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
-                        value={formik.values.fecha_hasta}
+                        value={formik.values.fecha_servicio_hasta}
                         className="w-full p-2 border rounded border-gray-400"
                         />
-                        {formik.errors.fecha_hasta && (
-                        <p className="text-red-500 text-sm">{formik.errors.fecha_hasta}</p>
+                        {formik.errors.fecha_servicio_hasta && (
+                        <p className="text-red-500 text-sm">{formik.errors.fecha_servicio_hasta}</p>
                         )}
                     </div>
                 </div>
@@ -123,6 +163,7 @@ export const DebitNoticeDetailForm = ()=>{
                     <textarea
                         name="observaciones"
                         onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         value={formik.values.observaciones}
                         rows={3}
                         className="w-full p-2 border rounded border-gray-400"
@@ -134,7 +175,7 @@ export const DebitNoticeDetailForm = ()=>{
                 </div>
                 <div className="flex justify-end space-x-4 pt-4">
                     <button
-                    type="submit"
+                    type="button"
                     className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700"
                     >
                     Siguiente
@@ -176,6 +217,7 @@ export const DebitNoticeDetailForm = ()=>{
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
+                        
                     {selectedAdvances.map((advance, index) => (
                         <tr key={advance.id} className="hover:bg-gray-50">
                         <td className="p-3 text-sm font-medium text-gray-900">
@@ -201,6 +243,18 @@ export const DebitNoticeDetailForm = ()=>{
                         </td>
                         </tr>
                     ))}
+
+                    {details.map((detail, index) => (
+                            <tr key={detail.id} className="hover:bg-gray-50">
+                                <td className="p-3 text-sm font-medium text-gray-900">{selectedAdvances.length + index + 1}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.tipo_concepto}</td>
+                                <td className="p-3 text-sm text-gray-500">DET</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.descripcion_concepto}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.cantidad}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.precio_unitario}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.importe}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

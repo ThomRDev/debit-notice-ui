@@ -1,6 +1,6 @@
 export interface AdvanceRequestData{
     id:string;
-    numero_solicitud:string;
+    numero_solicitud?:string;
     fecha_solicitud:string;
     solicitante:string;
     importe:number;

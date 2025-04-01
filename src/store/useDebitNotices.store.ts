@@ -6,8 +6,8 @@ export interface SearchParams {
   estado: string;
   numero_sap: string;
   usuario_creador: string;
-  fecha_desde: string;
-  fecha_hasta: string;
+  fecha_servicio_desde: string;
+  fecha_servicio_hasta: string;
   cliente: string;
   moneda: string;
   importe_desde: string;
@@ -27,8 +27,8 @@ export const useSearchStore = create(
           estado: "Todos",
           numero_sap: "",
           usuario_creador: "",
-          fecha_desde: "",
-          fecha_hasta: "",
+          fecha_servicio_desde: "",
+          fecha_servicio_hasta: "",
           moneda: "Todas",
           importe_desde: "0.00",
           importe_hasta: "0.00",
@@ -47,8 +47,8 @@ export const useSearchStore = create(
               estado: "Todos",
               numero_sap: "",
               usuario_creador: "",
-              fecha_desde: "",
-              fecha_hasta: "",
+              fecha_servicio_desde: "",
+              fecha_servicio_hasta: "",
               moneda: "Todas",
               importe_desde: "0.00",
               importe_hasta: "0.00",

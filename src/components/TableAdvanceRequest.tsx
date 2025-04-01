@@ -16,7 +16,6 @@ const TableAdvanceRequest = () =>{
         queryKey:['advances', currentPage],
         queryFn: async()=>{
             const data = await AdvanceRequestApi.getAll(null,currentPage, pageSize);
-            console.log(data.data)
             return data;
         }
     })
@@ -109,7 +108,6 @@ const TableAdvanceRequest = () =>{
                 <tbody className="divide-y divide-gray-200">
                     {dataSearch?.map((advance) => {
                     const selected = isSelected(advance.id);
-                    console.log(advance)
                     return (
                         <tr 
                         key={advance.id} 

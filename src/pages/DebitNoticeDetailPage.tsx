@@ -79,7 +79,7 @@ export const DebitNoticeDetailPage = () => {
               </p>
               <p className="mb-2">
                 <span className="font-semibold">Tipo de cambio:</span>{" "}
-                {data.aviso_debito.tipo_cambio_moneda}
+                {data.aviso_debito.tipo_cambio_moneda_moneda}
               </p>
               <p className="mb-2">
                 <span className="font-semibold">Fecha de creación:</span>{" "}
