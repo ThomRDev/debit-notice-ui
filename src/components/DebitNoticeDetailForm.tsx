@@ -4,6 +4,7 @@ import { useAdvanceRequestSelected } from "../store/useAdvanceRequestSelected.st
 
 export const DebitNoticeDetailForm = ()=>{
     const {  addDetail,selectedAdvances, details } = useAdvanceRequestSelected();
+
     const formik = useFormik({
         initialValues: {
           tipo_concepto: '',
@@ -21,6 +22,7 @@ export const DebitNoticeDetailForm = ()=>{
         onSubmit: async (values) => {
             addDetail(values);
             formik.resetForm();
+            console.log('detail form',details)
         }
       });
 
@@ -29,7 +31,7 @@ export const DebitNoticeDetailForm = ()=>{
         const getNumericValue = (value: string | number): number => {
             return typeof value === 'string' ? parseFloat(value) || 0 : value;
           };
-        
+          
           const cantidad = getNumericValue(
             e.target.name === 'cantidad' ? e.target.value : formik.values.cantidad
           );

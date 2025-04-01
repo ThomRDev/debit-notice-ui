@@ -9,7 +9,7 @@ export interface DeviceNoticeData{
     condicion_pago:string;
     estado:string;
     observaciones:string;
-    importe_total?: number;
+    importe?: number;
     id_usuario_creador?:number
 }
 

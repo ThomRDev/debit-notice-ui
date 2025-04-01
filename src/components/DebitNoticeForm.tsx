@@ -8,11 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebitNoticeStore } from "../store/useDebitNoticeStore.store";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import useUserManagementStore from "../store/useUserManagement.store";
 export const DebitNoticeForm = ()=>{
 
   const { selectedAdvances, details, clear } = useAdvanceRequestSelected();
-  const { formData, updateFormData } = useDebitNoticeStore();
+  const { formData, updateFormData, resetFormData } = useDebitNoticeStore();
+  const {id} = useUserManagementStore();
   
+  console.log('form',details)
   const { data: clientsData } = useQuery({
     queryKey: ['clients'],
     queryFn: () => ClientApi.getAll()
@@ -48,23 +51,24 @@ export const DebitNoticeForm = ()=>{
           condicion_pago: values.condicion_pago,
           estado: values.estado,
           observaciones: values.observaciones,
-          id_usuario_creador: 1,
+          id_usuario_creador: Number(id),
+          importe: importeTotal
         };
         const mappedAdvances: DeviceNoticeDetailData[] = selectedAdvances.map((advance) => ({
           tipo_concepto: "Anticipo", 
           descripcion_concepto: advance.motivo || "",
           cantidad: 1,
           precio_unitario: advance.importe || 0,
-          total: 1* (advance.importe || 0),
-          numero_solicitud: advance.numero_solicitud,
+          importe: 1* (advance.importe || 0),
+          numero_solicitud: advance.numero_solicitud
         }));
         const bodyDebitDetail: DeviceNoticeDetailData[] = [...mappedAdvances, ...details];
-        console.log("Enviando cosas")
+        console.log("Enviando cosas", bodyDebit)
         try {
           toast.promise(DebitNoticeApi.create(bodyDebit, bodyDebitDetail), {
             loading: "Enviado datos al servidor...",
             success: () => {
-              useDebitNoticeStore.getState().resetFormData();
+              resetFormData()
               formik.resetForm();
               clear();
               console.log('LOGIN')

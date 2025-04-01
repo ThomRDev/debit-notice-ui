@@ -3,11 +3,13 @@ import { DebitNoticeForm } from "../components/DebitNoticeForm";
 import TableAdvanceRequest from "../components/TableAdvanceRequest";
 import { DebitNoticeDetailForm } from "../components/DebitNoticeDetailForm";
 import { useNavigate } from "react-router";
+import useTempNumberStore from "../store/TempNumberStore";
 
 type TabType = 'general' | 'detalle' | 'anticipo';
 export const DebitNoticeCreate = ()=>{
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState<TabType>('general');
+    const tempNumber = useTempNumberStore((state) => state.tempNumber);
     return(
         <>
         <div className="p-4 bg-white rounded-lg">
@@ -22,7 +24,7 @@ export const DebitNoticeCreate = ()=>{
             </div>
             
             <div className="mb-6 text-sm">
-                <span className="font-medium">Nº Temporal: AD-0006</span>
+                <span className="font-medium">Nº Temporal: {tempNumber}</span>
             </div>
             
             <div className="flex border-b border-gray-200 gap-1 mb-6">
