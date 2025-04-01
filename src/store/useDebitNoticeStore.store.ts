@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware"; // Importa devtools desde el middleware
 import { DeviceNoticeData } from "../config/interface/DeviceNotice";
 
 interface Data {
@@ -6,9 +7,26 @@ interface Data {
   updateFormData: (data: Partial<DeviceNoticeData>) => void;
   resetFormData: () => void;
 }
-export const useDebitNoticeStore = create<Data>(
-      (
-        (set) => ({
+
+export const useDebitNoticeStore = create<Data>()(
+  devtools(
+    (set) => ({
+      formData: {
+        fecha_emision: "",
+        cliente: "",
+        ruc: "",
+        direccion: "",
+        contacto: "",
+        moneda: "",
+        tipo_cambio_moneda: 0,
+        condicion_pago: "",
+        estado: "",
+        observaciones: "",
+      },
+      updateFormData: (data) =>
+        set((state) => ({ formData: { ...state.formData, ...data } })),
+      resetFormData: () =>
+        set({
           formData: {
             fecha_emision: "",
             cliente: "",
@@ -21,8 +39,8 @@ export const useDebitNoticeStore = create<Data>(
             estado: "",
             observaciones: "",
           },
-          updateFormData: (data) => set((state) => ({ formData: { ...state.formData, ...data } })),
-          resetFormData: () => set({ formData: { fecha_emision: "", cliente: "", ruc: "", direccion: "", contacto: "", moneda: "", tipo_cambio_moneda: 0, condicion_pago: "", estado: "", observaciones: "" } }),
-        })
-    )
-  );
+        }),
+    }),
+    { name: "DebitNoticeStore" }
+  ) // El nombre es opcional para las herramientas de desarrollo
+);
