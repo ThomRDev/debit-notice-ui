@@ -1,11 +1,12 @@
 export interface AdvanceRequestData{
     id:string;
-    numero_solicitud:string;
+    numero_solicitud?:string;
     fecha_solicitud:string;
     solicitante:string;
     importe:number;
     moneda:string;
     estado:string;
+    motivo:string;
 }
 
 export interface ApiResponse{

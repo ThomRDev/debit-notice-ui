@@ -55,8 +55,8 @@ const Schemabusqueda = Yup.object().shape({
       );
     }
   ),
-  fecha_desde: Yup.string(),
-  fecha_hasta: Yup.string(),
+  fecha_servicio_desde: Yup.string(),
+  fecha_servicio_hasta: Yup.string(),
   estado: Yup.string()
     .required("(*) Estado no válido")
     .oneOf(
@@ -173,19 +173,19 @@ export const SearchDebit = () => {
 
             <div className="col-span-1">
               <label
-                htmlFor="fecha_desde"
+                htmlFor="fecha_servicio_desde"
                 className="block text-sm font-medium text-gray-700"
               >
                 Fecha desde
               </label>
               <Field
                 type="date"
-                id="fecha_desde"
-                name="fecha_desde"
+                id="fecha_servicio_desde"
+                name="fecha_servicio_desde"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 h-[42px]"
               />
               <ErrorMessage
-                name="fecha_desde"
+                name="fecha_servicio_desde"
                 component="span"
                 className="text-red-600/70 text-[.7em] pl-2"
               />
@@ -193,19 +193,19 @@ export const SearchDebit = () => {
 
             <div className="col-span-1">
               <label
-                htmlFor="fecha_hasta"
+                htmlFor="fecha_servicio_hasta"
                 className="block text-sm font-medium text-gray-700"
               >
                 Fecha hasta
               </label>
               <Field
                 type="date"
-                id="fecha_hasta"
-                name="fecha_hasta"
+                id="fecha_servicio_hasta"
+                name="fecha_servicio_hasta"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 h-[42px]"
               />
               <ErrorMessage
-                name="fecha_hasta"
+                name="fecha_servicio_hasta"
                 component="span"
                 className="text-red-600/70 text-[.7em] pl-2"
               />
@@ -314,8 +314,8 @@ export const SearchDebit = () => {
                       estado: "Todos",
                       numero_sap: "",
                       usuario_creador: "",
-                      fecha_desde: "",
-                      fecha_hasta: "",
+                      fecha_servicio_desde: "",
+                      fecha_servicio_hasta: "",
                       moneda: "Todas",
                       importe_desde: "0.00",
                       importe_hasta: "0.00",
