@@ -122,7 +122,6 @@ export const SearchDebit = () => {
                 <option value="Borrador">Borrador</option>
                 <option value="Pendiente">Pendiente</option>
                 <option value="Migrado">Migrado</option>
-                <option value="Migrado">Migrado</option>
               </Field>
               <ErrorMessage
                 name="estado"

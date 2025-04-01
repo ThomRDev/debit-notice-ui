@@ -7,6 +7,9 @@ import {
   FolderArrowDownIcon,
   PrinterIcon,
   PencilSquareIcon,
+  ArrowLeftCircleIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";
@@ -17,6 +20,7 @@ import useModalStore from "../store/useModalStore.store";
 import AnularAvisosSAP from "./AnularAvisosSAP";
 import MigrarAvisosSAP from "./MigrarAvisosSAP";
 import { useUI } from "../store/useUi.store";
+import { usePagination } from "../hooks/usePagination";
 
 export interface DebitNotice {
   numero_aviso: string;
@@ -29,8 +33,9 @@ export interface DebitNotice {
 
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
-  console.log("🚀 ~ TableDebit ~ data:", data);
-  console.log("🚀 ~ TableDebit ~ isLoading:", isLoading);
+  const { currentPage, totalPages, goToPage, startIndex, endIndex, pages } =
+    usePagination({ totalItems: data?.length });
+  const currentPageData = data?.slice(startIndex, endIndex);
   const { toogleEditDebitNotice } = useUI();
 
   const { openModal } = useModalStore();
@@ -49,8 +54,7 @@ export const TableDebit = () => {
 
     toast.promise(changeStateDebitNotePromise, {
       loading: "Cambiando estado...",
-      success: (data) => {
-        console.log(data);
+      success: () => {
         setSelectedNotices([]);
         close();
         return "Estado cambiado con éxito";
@@ -69,8 +73,7 @@ export const TableDebit = () => {
 
     toast.promise(changeStateDebitNotePromise, {
       loading: "Cambiando estado...",
-      success: (data) => {
-        console.log(data);
+      success: () => {
         setSelectedNotices([]);
         close();
         return "Estado cambiado con éxito";
@@ -154,7 +157,7 @@ export const TableDebit = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {data.map((debitNotice: DebitNotice) => (
+            {currentPageData?.map((debitNotice: DebitNotice) => (
               <tr key={debitNotice.numero_aviso} className="hover:bg-gray-50">
                 <td className="p-3">
                   <input
@@ -218,6 +221,7 @@ export const TableDebit = () => {
             ))}
           </tbody>
         </table>
+
         <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <div className="flex space-x-2">
             <button
@@ -270,6 +274,27 @@ export const TableDebit = () => {
             <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
               <FolderArrowDownIcon className="h-4 w-4 mr-2" /> Exportar
             </button>
+          </div>
+
+          <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div className="flex space-x-2">
+              {pages.map((page) => (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`px-4 py-2 rounded-md text-sm ${
+                    page === currentPage
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <span className="text-sm text-gray-700 ml-2">
+              Página {currentPage} de {totalPages}
+            </span>
           </div>
         </div>
       </div>
