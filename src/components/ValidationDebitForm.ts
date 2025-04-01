@@ -35,12 +35,12 @@ export const deviceNoticeSchema = Yup.object().shape({
 export const deviceNoticeDetailSchema = Yup.object().shape({
   descripcion_concepto: Yup.string().required('La descripción del concepto es obligatoria'),
   cantidad: Yup.number()
-    .typeError('Debe ser un número')
+    .integer('Debe ser un número entero')
     .min(1, 'La cantidad debe ser mayor a 0')
     .required('La cantidad es obligatoria'),
   precio_unitario: Yup.number()
     .typeError('Debe ser un número')
-    .min(0, 'El precio unitario no puede ser negativo')
+    .min(1, 'El precio unitario debe ser mayor a 0')
     .required('El precio unitario es obligatorio'),
   centro_costo: Yup.string().required('El centro de costo es obligatorio'),
   fecha_servicio_desde: Yup.date()
@@ -50,5 +50,6 @@ export const deviceNoticeDetailSchema = Yup.object().shape({
     .required('La fecha de fin es obligatoria')
     .min(Yup.ref('fecha_servicio_desde'), 'La fecha hasta no puede ser menor que la fecha desde'),
   observaciones: Yup.string().max(500, 'Las observaciones no pueden superar los 500 caracteres'),
-  tipo_concepto: Yup.string().required('El tipo de concepto es requerido'),
+  tipo_concepto: Yup.string().required('El tipo de concepto es requerido')
+  .notOneOf([''], 'Selecciona un tipo de concepto válido'),
 });

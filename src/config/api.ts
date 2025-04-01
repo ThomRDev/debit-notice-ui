@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import {
+  DebitNoticeUpdateData,
   DeviceNoticeData,
   DeviceNoticeDetailData,
 } from "./interface/DeviceNotice";
@@ -19,6 +20,18 @@ export const DebitNoticeApi = {
         bodyDebitDetail,
       });
       return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      throw new Error(axiosError.message);
+    }
+  },
+  put_aviso: async (
+    id:number,
+    bodyDebitUpdate: DebitNoticeUpdateData
+  ): Promise<string> => {
+    try {
+      const response = await DebitServiceApi.put(`/debit-notice/update/${id}`,bodyDebitUpdate);
+      return response.data.resultado;
     } catch (error) {
       const axiosError = error as AxiosError;
       throw new Error(axiosError.message);

@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { SearchParams, useSearchStore } from "../store/useDebitNotices.store";
-import DebitServiceApi from "../config/api";
+import DebitServiceApi, { DebitNoticeApi } from "../config/api";
+import { DebitNoticeUpdateData } from "../config/interface/DeviceNotice";
 
 const buildQueryParams = (params: SearchParams): string => {
   const queryParams = new URLSearchParams(
@@ -24,4 +25,15 @@ export const useDebitNotices = () => {
   });
 
   return { data, isLoading, error };
+};
+
+
+export const usePutDebitNotice = () => {
+  const { mutate, error } = useMutation({
+    mutationFn: (params: { id: number; data: DebitNoticeUpdateData }) =>
+      DebitNoticeApi.put_aviso(params.id, params.data),
+    mutationKey: ["update-debit-notice"], 
+  });
+
+  return { mutate, error };
 };

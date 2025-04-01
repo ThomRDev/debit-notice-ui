@@ -28,6 +28,12 @@ export interface DeviceNoticeDetailData{
     numero_solicitud?:string
 }
 
+export interface DebitNoticeUpdateData{
+    observaciones?: string,
+    estado?:string,
+    id_cliente?:number
+}
+
 export interface ClientDataResponse{
     id: number,
     ruc: string,

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useClientes } from "../hooks/useClientes";
 import { useUI } from "../store/useUi.store";
+import useUserManagementStore from "../store/useUserManagement.store";
+import { usePutDebitNotice } from "../hooks/useDebitNotices";
 
 interface Props {
   data: any;
@@ -13,16 +15,20 @@ export const EditDetailDebit = ({ data }: Props) => {
   const navigate = useNavigate();
 
   const { toogleEditDebitNotice } = useUI();
+  const {id: idUsuario} = useUserManagementStore();
+  const {mutate}=usePutDebitNotice();
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState({
-    nombre: data.aviso_debito.cliente,
+    id:data.aviso_debito.id,
+    estado: data.aviso_debito.estado,
+    nombre: data.aviso_debito.id_cliente,
     ruc: data.aviso_debito.ruc,
     direccion: data.aviso_debito.direccion,
     contacto: data.aviso_debito.contacto,
   });
 
   const { data: clientesList, isLoading } = useClientes();
-  const [estadoAviso, setEstadoAviso] = useState("Borrador");
+  const [estadoAviso, setEstadoAviso] = useState("");
   const [avisoData, setAvisoData] = useState({
     observaciones: data.aviso_debito.observaciones,
   });
@@ -41,6 +47,19 @@ export const EditDetailDebit = ({ data }: Props) => {
   const handleEstadoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setEstadoAviso(e.target.value);
   };
+
+  const handleEditDebotNotice = ()=>{
+    const id = data.aviso_debito.id;
+    const updateData ={
+      observaciones: avisoData.observaciones,
+      estado: estadoAviso.toUpperCase(),
+      id_cliente: clienteSeleccionado.id,
+      id_usuario_modificador: idUsuario,
+    }
+
+    console.log(id,updateData, 'prueba');
+    mutate({id, data:updateData});
+  }
   return (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -79,8 +98,17 @@ export const EditDetailDebit = ({ data }: Props) => {
             value={estadoAviso}
             onChange={handleEstadoChange}
           >
-            <option value="Borrador">Borrador</option>
-            <option value="Pendiente">Pendiente</option>
+            {clienteSeleccionado.estado === "BORRADOR" ? (
+              <>
+                <option value="Borrador">BORRADOR</option>
+                <option value="Pendiente">PENDIENTE</option>
+              </>
+            ) : (
+              <>
+                <option value="Pendiente">PENDIENTE</option>
+                <option value="Borrador">BORRADOR</option>
+              </>
+            )}
           </select>
         </div>
       </div>
@@ -136,11 +164,17 @@ export const EditDetailDebit = ({ data }: Props) => {
                 value={clienteSeleccionado.nombre}
                 onChange={handleClienteChange}
               >
-                {clientesList?.map((cliente) => (
-                  <option key={cliente.ruc} value={cliente.nombre}>
-                    {cliente.nombre}
-                  </option>
-                ))}
+                {clientesList
+                  ?.sort((a:any, b:any) => {
+                    if (a.id === data.aviso_debito.id_cliente) return -1;
+                    if (b.id === data.aviso_debito.id_cliente) return 1;
+                    return 0;
+                  })
+                  .map((cliente:any) => (
+                    <option key={cliente.ruc} value={cliente.nombre}>
+                      {cliente.nombre}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -250,6 +284,8 @@ export const EditDetailDebit = ({ data }: Props) => {
           }}
         />
       </div>
+
+      <button onClick={handleEditDebotNotice} type="submit" className="text-white px-4 py-2 bg-[#1E68CA]  rounded hover:bg-blue-900">UPDATE</button>
     </>
   );
 };

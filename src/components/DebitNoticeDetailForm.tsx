@@ -62,6 +62,10 @@ export const DebitNoticeDetailForm = ()=>{
                         <option value="Servicios">Servicio</option>
                         <option value="Otros">Otros</option>
                         </select>
+
+                        {formik.errors.tipo_concepto && (
+                        <p className="text-red-500 text-sm">{formik.errors.tipo_concepto}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Descripción del concepto*</label>
@@ -81,6 +85,7 @@ export const DebitNoticeDetailForm = ()=>{
                         <label className="block mb-1 text-sm text-gray-600">Cantidad</label>
                         <input
                         type="number"
+                        step="1"
                         name="cantidad"
                         onChange={handleQuantityPriceChange}
                         value={formik.values.cantidad}
