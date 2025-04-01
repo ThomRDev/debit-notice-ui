@@ -29,12 +29,13 @@ export interface DebitNotice {
 
 export const TableDebit = () => {
   const { data, isLoading } = useDebitNotices();
+  console.log("🚀 ~ TableDebit ~ data:", data);
+  console.log("🚀 ~ TableDebit ~ isLoading:", isLoading);
   const { toogleEditDebitNotice } = useUI();
 
   const { openModal } = useModalStore();
   const { id } = useUserManagementStore();
   const [selectedNotices, setSelectedNotices] = useState<DebitNotice[]>([]);
-  console.log("🚀 ~ TableDebit ~ selectedNotices:", selectedNotices);
   const navigate = useNavigate();
   const { mutateAsync: changeStateDebitNote, isPending } =
     useChangeStateDebitNote();
@@ -175,7 +176,7 @@ export const TableDebit = () => {
                   {debitNotice.cliente}
                 </td>
                 <td className="p-3 text-sm text-gray-500">
-                  S/ {debitNotice.importe_total.toFixed(2)}
+                  S/ {(debitNotice.importe_total ?? 0).toFixed(2)}
                 </td>
                 <td className="p-3 text-sm text-gray-500 text-center">
                   {debitNotice.numero_sap ?? "-"}
