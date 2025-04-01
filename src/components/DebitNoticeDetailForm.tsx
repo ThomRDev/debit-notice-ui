@@ -108,7 +108,7 @@ export const DebitNoticeDetailForm = ()=>{
                         <input
                         type="text"
                         name="importe"
-                        value={formik.values.importe}
+                        value={formik.values.importe.toFixed(2)}
                         readOnly 
                         className="w-full p-2 border rounded bg-gray-100 border-gray-400"
                         />
@@ -174,12 +174,6 @@ export const DebitNoticeDetailForm = ()=>{
                     )}
                 </div>
                 <div className="flex justify-end space-x-4 pt-4">
-                    <button
-                    type="button"
-                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700"
-                    >
-                    Siguiente
-                    </button>
                     <button
                     type="submit"
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -251,8 +245,8 @@ export const DebitNoticeDetailForm = ()=>{
                                 <td className="p-3 text-sm text-gray-500">DET</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.descripcion_concepto}</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.cantidad}</td>
-                                <td className="p-3 text-sm text-gray-500">{detail.precio_unitario}</td>
-                                <td className="p-3 text-sm text-gray-500">{detail.importe}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.precio_unitario.toFixed(2)}</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.importe?.toFixed(2)}</td>
                             </tr>
                         ))}
                     </tbody>

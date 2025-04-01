@@ -6,13 +6,13 @@ import { DeviceNoticeDetailData } from "../config/interface/DeviceNotice";
 import { ClientApi } from "../config/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { useDebitNoticeStore } from "../store/useDebitNoticeStore.store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 export const DebitNoticeForm = ()=>{
-  
-  const { selectedAdvances, details } = useAdvanceRequestSelected();
+
+  const { selectedAdvances, details, clear } = useAdvanceRequestSelected();
   const { formData, updateFormData } = useDebitNoticeStore();
   
-  console.log(selectedAdvances)
   const { data: clientsData } = useQuery({
     queryKey: ['clients'],
     queryFn: () => ClientApi.getAll()
@@ -20,10 +20,23 @@ export const DebitNoticeForm = ()=>{
 
   const clients = Array.isArray(clientsData) ? clientsData : [];
 
+  const importeTotal = useMemo(()=>{
+    let totalAnticipo = 0;
+    let totalDetails = 0;
+    selectedAdvances.forEach(anticipo => {
+      totalAnticipo += anticipo.importe 
+    })
+    details.forEach( detalle =>{
+      totalDetails += detalle.importe!
+    })
+    return totalAnticipo + totalDetails
+  }, [selectedAdvances,details])
+
   const formik = useFormik({
       initialValues: formData,
       validationSchema: deviceNoticeSchema,
       onSubmit: async (values) => {
+        console.log("Entrando")
         const bodyDebit = {
           fecha_emision: values.fecha_emision,
           cliente: values.cliente,
@@ -46,11 +59,19 @@ export const DebitNoticeForm = ()=>{
           numero_solicitud: advance.numero_solicitud,
         }));
         const bodyDebitDetail: DeviceNoticeDetailData[] = [...mappedAdvances, ...details];
-
-        console.log(bodyDebit,bodyDebitDetail)
+        console.log("Enviando cosas")
         try {
-          const response = await DebitNoticeApi.create(bodyDebit, bodyDebitDetail);
-          console.log("Aviso de débito enviado:", response);
+          toast.promise(DebitNoticeApi.create(bodyDebit, bodyDebitDetail), {
+            loading: "Enviado datos al servidor...",
+            success: () => {
+              useDebitNoticeStore.getState().resetFormData();
+              formik.resetForm();
+              clear();
+              console.log('LOGIN')
+              return "Aviso Débito Creado";
+            },
+            error: (err) => err.response?.data?.message || "Error al cambiar estado",
+          });
         } catch (error) {
           console.error("Error al enviar aviso de débito:", error);
         }
@@ -72,11 +93,6 @@ export const DebitNoticeForm = ()=>{
         formik.setFieldValue('contacto', selectedClient.contacto || '');
       }}
 
-    const isFormikComplete = ()=>{
-      return Object.keys(formik.errors).length === 0 &&
-      formik.values.cliente !=='' && formik.values.fecha_emision !== ''
-    }
-
     const [prevFormikValues, setPrevFormikValues] = useState(formik.values);
     useEffect(() => {
       if (JSON.stringify(prevFormikValues) !== JSON.stringify(formik.values)) {
@@ -84,6 +100,8 @@ export const DebitNoticeForm = ()=>{
         setPrevFormikValues(formik.values);
       }
     }, [formik.values, updateFormData, prevFormikValues]);
+
+
     return(
         <>
             <form onSubmit={formik.handleSubmit}>
@@ -97,6 +115,7 @@ export const DebitNoticeForm = ()=>{
                         onBlur={formik.handleBlur}
                         value={formik.values.fecha_emision}
                         className="w-full p-2 border rounded border-gray-400"
+                        max={new Date().toISOString().split("T")[0]}
                         />
                         {formik.errors.fecha_emision && (
                         <p className="text-red-500 text-sm">{formik.errors.fecha_emision}</p>
@@ -170,6 +189,7 @@ export const DebitNoticeForm = ()=>{
                         <input
                         type="text"
                         name="importe"
+                        value={importeTotal.toFixed(2)}
                         readOnly
                         className="w-full p-2 border rounded bg-gray-100 border-gray-400"
                         />
@@ -211,8 +231,18 @@ export const DebitNoticeForm = ()=>{
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Estado del Aviso*</label>
-                        <div className="p-2 border rounded-sm border-gray-400">BORRADOR</div>
-                    </div>
+                        <select
+                            name="estado"
+                            value={formik.values.estado}
+                            className="w-full p-2 border rounded border-gray-400"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        >
+                          <option value="">Seleccione un estado</option>
+                          <option value="BORRADOR">BORRADOR</option>
+                          <option value="PENDIENTE">PENDIENTE</option>
+                        </select>
+                      </div>
                 </div>
                 <div>
                     <label className="block mb-1 pt-3 text-sm text-gray-600">Observaciones Generales</label>
@@ -230,16 +260,12 @@ export const DebitNoticeForm = ()=>{
                     )}
                 </div>
                 <div className="flex justify-end space-x-4 pt-4">
-                    <button
-                    type="submit"
-                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700"
-                    >
-                    Siguiente
-                    </button>
+                    
                     <button
                     type="button"
                     onClick={() => {
                       formik.resetForm();
+                      clear();
                       useDebitNoticeStore.getState().resetFormData();
                     }}
                     className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
@@ -248,15 +274,11 @@ export const DebitNoticeForm = ()=>{
                     </button>
                     <button
                     type="submit"
-                    onClick={() => {
-                      formik.resetForm();
-                      useDebitNoticeStore.getState().resetFormData();
-                    }}
                     className={`px-4 py-2 text-white rounded ${
-                        isFormikComplete() ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'
+                        formik.values.estado=='PENDIENTE' ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'
                       }`}
                     >
-                    {isFormikComplete() ? 'Guardar Aviso' : 'Guardar Borrador'}
+                    {formik.values.estado== 'PENDIENTE' ? 'Guardar Aviso' : 'Guardar Borrador'}
                     </button>
                 </div>
             </form>

@@ -4,16 +4,12 @@ export const deviceNoticeSchema = Yup.object().shape({
   fecha_emision: Yup.date()
     .required('Fecha de emisión es requerida')
     .max(new Date(), 'La fecha no puede ser futura'),
-  
-  cliente: Yup.string()
-    .required('Seleccionar cliente')
-    .oneOf(['1', '2'], "Seleccione un cliente válido"),
     
   moneda: Yup.string()
     .required('Seleccione una moneda')
     .oneOf(['PEN', 'USD'], 'Moneda inválida'),
     
-    tipo_cambio_moneda: Yup.number()
+  tipo_cambio_moneda: Yup.number()
     .when('moneda', {
       is: (value: string) => value === 'PEN',
       then: () => Yup.number()

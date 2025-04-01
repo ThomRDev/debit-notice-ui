@@ -2,16 +2,21 @@ import { useState } from "react";
 import { DebitNoticeForm } from "../components/DebitNoticeForm";
 import TableAdvanceRequest from "../components/TableAdvanceRequest";
 import { DebitNoticeDetailForm } from "../components/DebitNoticeDetailForm";
+import { useNavigate } from "react-router";
 
 type TabType = 'general' | 'detalle' | 'anticipo';
 export const DebitNoticeCreate = ()=>{
+    const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState<TabType>('general');
     return(
         <>
         <div className="p-4 bg-white rounded-lg">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold text-gray-800">Crear Aviso de Débito</h1>
-                <button className="text-blue-600 hover:text-blue-800 text-sm">
+                <button className="text-blue-600 hover:text-blue-800 text-sm"
+                onClick={()=>{
+                    navigate('/gestion-comercial/avisos-debito')
+                }}>
                     ← Volver al listado
                 </button>
             </div>
@@ -73,21 +78,6 @@ export const DebitNoticeCreate = ()=>{
                             
                             <TableAdvanceRequest />
                             
-                            <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap justify-between items-center gap-4">
-                                <div>
-                                    <span className="font-medium text-sm">Total anticipos seleccionados:</span>
-                                    <span className="ml-2 font-bold">S/ 0.00</span>
-                                </div>
-                                
-                                <div className="flex flex-wrap gap-2">
-                                    <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-300">
-                                        Anterior
-                                    </button>
-                                    <button className="text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-100">
-                                        Cancelar
-                                    </button>
-                                </div>
-                            </div>
                             
                             <p className="text-xs text-gray-500 mt-4">
                                 Al agregar anticipos, estos se incluirán como conceptos en el detalle del aviso de débito.

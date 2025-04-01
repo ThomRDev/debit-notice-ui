@@ -9,6 +9,7 @@ interface AdvanceRequestSelected {
   removeSelectedAdvance: (id: string) => void;
   isSelected: (id: string) => boolean;
   addDetail: (detail: DeviceNoticeDetailData) => void;
+  clear:VoidFunction
 }
 
 export const useAdvanceRequestSelected = create<AdvanceRequestSelected>((set,get) => ({
@@ -28,5 +29,9 @@ export const useAdvanceRequestSelected = create<AdvanceRequestSelected>((set,get
     },
   addDetail: (detail) => set((state) => ({
       details: [...state.details, { ...detail, id: (state.details.length + 1).toString() }]
-    }))
+    })),
+  clear: ()=> set(() =>({
+    selectedAdvances: [],
+    details: [],
+  }))
 }));
