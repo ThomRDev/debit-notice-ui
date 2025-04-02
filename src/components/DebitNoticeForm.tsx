@@ -9,10 +9,12 @@ import { useDebitNoticeStore } from "../store/useDebitNoticeStore.store";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import useUserManagementStore from "../store/useUserManagement.store";
+import { useNavigate } from "react-router";
 export const DebitNoticeForm = () => {
   const { selectedAdvances, details, clear } = useAdvanceRequestSelected();
   const { formData, updateFormData, resetFormData } = useDebitNoticeStore();
   const { id } = useUserManagementStore();
+  const navigate = useNavigate();
 
   console.log("form", details);
   const { data: clientsData } = useQuery({
@@ -60,7 +62,7 @@ export const DebitNoticeForm = () => {
           cantidad: 1,
           precio_unitario: advance.importe || 0,
           importe: 1 * (advance.importe || 0),
-          numero_solicitud: advance.numero_solicitud,
+          numero_solicitud_anticipo: advance.id,
         })
       );
       const bodyDebitDetail: DeviceNoticeDetailData[] = [
@@ -84,6 +86,7 @@ export const DebitNoticeForm = () => {
       } catch (error) {
         console.error("Error al enviar aviso de débito:", error);
       }
+      navigate("/gestion-comercial/avisos-debito")
     },
   });
 
