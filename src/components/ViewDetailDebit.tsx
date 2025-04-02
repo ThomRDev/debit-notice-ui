@@ -7,7 +7,13 @@ import {
 import capitalize from "capitalize";
 import { useNavigate } from "react-router";
 import { getStatusColor } from "../utils/color";
-
+import {DebitNotice} from "./TableDebit";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useChangeStateDebitNote } from "../hooks/useChangeStateDebitNote";
+import useUserManagementStore from "../store/useUserManagement.store";
+import useModalStore from "../store/useModalStore.store";
+import AnularAvisosSAP from "./AnularAvisosSAP";
 interface Props {
   data: any;
 }
@@ -15,6 +21,31 @@ interface Props {
 export const ViewDetailDebit = ({ data }: Props) => {
   const navigate = useNavigate();
   console.log("🚀 ~ ViewDetailDebit ~ data:", data);
+
+  const [selectedNotices, setSelectedNotices] = useState<DebitNotice[]>([]);
+  const { mutateAsync: changeStateDebitNote, isPending } = useChangeStateDebitNote();
+  const { id } = useUserManagementStore();
+  const { openModal } = useModalStore();
+      
+  const onAnular = (avisos: string[], motivo: string, close: () => void) => {
+    const changeStateDebitNotePromise = changeStateDebitNote({
+      usuario_modificador: id,
+      estado_final: "ANULADO",
+      avisos,
+      motivo,
+    });
+
+    toast.promise(changeStateDebitNotePromise, {
+      loading: "Cambiando estado...",
+      success: () => {
+        setSelectedNotices([]);
+        close();
+        
+        return "Estado cambiado con éxito";
+      },
+      error: (err) => err.response?.data?.message || "Error al cambiar estado",
+    });
+  };
 
   return (
     <>
@@ -202,9 +233,33 @@ export const ViewDetailDebit = ({ data }: Props) => {
 
         <div className="flex justify-end space-x-4">
           {data.aviso_debito.estado === "MIGRADO" && (
-            <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm">
-              Anular en SAP
-            </button>
+            <button
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+            onClick={() => {
+              setSelectedNotices([
+                {
+                  numero_aviso: data.aviso_debito.numero_aviso,
+                  fecha_emision: data.aviso_debito.fecha_emision,
+                  cliente: data.aviso_debito.cliente,
+                  importe_total: data.aviso_debito.importe_total,
+                  numero_sap: data.aviso_debito.numero_sap,
+                  estado: data.aviso_debito.estado,
+                },
+              ]);
+              
+              console.log('VER DETALLE DEBITO ANULADO',selectedNotices)
+              openModal("modal-anular", (close) => (
+                <AnularAvisosSAP
+                onClose={close}
+                 onConfirm={onAnular}
+                 selectedNotices={selectedNotices}
+                />
+              ));
+            }}
+            disabled={isPending}
+          >
+            Anular
+          </button>
           )}
 
           <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
