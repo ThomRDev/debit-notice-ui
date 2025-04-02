@@ -12,15 +12,16 @@ interface Props {
 }
 
 export const EditDetailDebit = ({ data }: Props) => {
+  console.log("🚀 ~ EditDetailDebit ~ data:", data);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const { toogleEditDebitNotice } = useUI();
-  const {id: idUsuario} = useUserManagementStore();
-  const {mutate}=usePutDebitNotice();
+  const { id: idUsuario } = useUserManagementStore();
+  const { mutate } = usePutDebitNotice();
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState({
-    id:data.aviso_debito.id,
+    id: data.aviso_debito.id_cliente,
     estado: data.aviso_debito.estado,
     nombre: data.aviso_debito.id_cliente,
     ruc: data.aviso_debito.ruc,
@@ -29,7 +30,7 @@ export const EditDetailDebit = ({ data }: Props) => {
   });
 
   const { data: clientesList, isLoading } = useClientes();
-  const [estadoAviso, setEstadoAviso] = useState("");
+  const [estadoAviso, setEstadoAviso] = useState(data.aviso_debito.estado);
   const [avisoData, setAvisoData] = useState({
     observaciones: data.aviso_debito.observaciones,
   });
@@ -49,30 +50,30 @@ export const EditDetailDebit = ({ data }: Props) => {
     setEstadoAviso(e.target.value);
   };
 
-  const handleEditDebotNotice = ()=>{
+  const handleEditDebotNotice = () => {
     const id = data.aviso_debito.id;
-    const updateData ={
+    const updateData = {
       observaciones: avisoData.observaciones,
       estado: estadoAviso.toUpperCase(),
       id_cliente: clienteSeleccionado.id,
       id_usuario_modificador: idUsuario,
-    }
+    };
 
-    console.log(id,updateData, 'prueba');
-    mutate({id, data:updateData});
+    console.log(id, updateData, "prueba");
+    mutate({ id, data: updateData });
     setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate("/gestion-comercial/avisos-debito");
-      }, 2000);
-  }
+    setTimeout(() => {
+      setShowModal(false);
+      navigate("/gestion-comercial/avisos-debito");
+    }, 2000);
+  };
   return (
     <>
       {showModal && (
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
-        <p className="text-center text-sm">Aviso modificado correctamente</p>
-      </div>
-    )}
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+          <p className="text-center text-sm">Aviso modificado correctamente</p>
+        </div>
+      )}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
           <button
@@ -176,12 +177,12 @@ export const EditDetailDebit = ({ data }: Props) => {
                 onChange={handleClienteChange}
               >
                 {clientesList
-                  ?.sort((a:any, b:any) => {
+                  ?.sort((a: any, b: any) => {
                     if (a.id === data.aviso_debito.id_cliente) return -1;
                     if (b.id === data.aviso_debito.id_cliente) return 1;
                     return 0;
                   })
-                  .map((cliente:any) => (
+                  .map((cliente: any) => (
                     <option key={cliente.ruc} value={cliente.nombre}>
                       {cliente.nombre}
                     </option>
@@ -296,7 +297,13 @@ export const EditDetailDebit = ({ data }: Props) => {
         />
       </div>
 
-      <button onClick={handleEditDebotNotice} type="submit" className="text-white px-4 py-2 bg-[#1E68CA]  rounded hover:bg-blue-900">UPDATE</button>
+      <button
+        onClick={handleEditDebotNotice}
+        type="submit"
+        className="text-white px-4 py-2 bg-[#1E68CA]  rounded hover:bg-blue-900"
+      >
+        Actualizar
+      </button>
     </>
   );
 };
