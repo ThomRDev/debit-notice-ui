@@ -68,6 +68,12 @@ const AnularAvisosSAP = ({
             ))}
           </div>
 
+          {avisosAnulables.length === 0 && (
+            <p className="text-gray-700 mb-3 text-center">
+              Los avisos seleccionados no tienen estado migrado.
+            </p>
+          )}
+
           {avisosNoAnulables.length > 0 && (
             <>
               <h3 className="text-sm font-semibold mb-2">
@@ -126,8 +132,9 @@ const AnularAvisosSAP = ({
 
           <div className="flex justify-end space-x-3">
             <button
+              disabled={avisosAnulables.length === 0}
               onClick={handleConfirm}
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+              className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Confirmar Anulación
             </button>

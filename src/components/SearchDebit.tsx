@@ -66,8 +66,8 @@ const Schemabusqueda = Yup.object().shape({
   moneda: Yup.string()
     .required("(*) La moneda no es válida")
     .oneOf(["Todas", "USD", "EUR"], "(*) La moneda no es válida"),
-  importe_desde: Yup.number(),
-  importe_hasta: Yup.number(),
+  importe_desde: Yup.number().min(0, "(*) No puede ser negativo"),
+  importe_hasta: Yup.number().min(0, "(*) No puede ser negativo"),
 });
 
 export const SearchDebit = () => {

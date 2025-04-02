@@ -44,37 +44,45 @@ const MigrarAvisosSAP = ({
             Está a punto de migrar los siguientes avisos a SAP:
           </p>
 
+          {avisosMigrables.length === 0 && (
+            <p className="text-gray-700 mb-3 text-center">
+              Los avisos seleccionados no tienen estado pendiente.
+            </p>
+          )}
+
           {/* Avisos migrables */}
           <div className="bg-gray-50 border border-gray-200 rounded-md mb-4">
-            <table className="w-full">
-              <thead className="text-xs text-gray-700">
-                <tr>
-                  <th className="py-2 px-3 text-left">CÓDIGO</th>
-                  <th className="py-2 px-3 text-left">DESCRIPCIÓN</th>
-                  <th className="py-2 px-3 text-right">MONTO</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm">
-                {avisosMigrables.map((aviso) => (
-                  <tr
-                    key={aviso.numero_aviso}
-                    className="border-t border-gray-200"
-                  >
-                    <td className="py-2 px-3">{aviso.numero_aviso}</td>
-                    <td className="py-2 px-3">{aviso.cliente}</td>
-                    <td className="py-2 px-3 text-right">
-                      S/ {aviso.importe_total.toFixed(2)}
+            {avisosMigrables.length !== 0 && (
+              <table className="w-full">
+                <thead className="text-xs text-gray-700">
+                  <tr>
+                    <th className="py-2 px-3 text-left">CÓDIGO</th>
+                    <th className="py-2 px-3 text-left">DESCRIPCIÓN</th>
+                    <th className="py-2 px-3 text-right">MONTO</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {avisosMigrables.map((aviso) => (
+                    <tr
+                      key={aviso.numero_aviso}
+                      className="border-t border-gray-200"
+                    >
+                      <td className="py-2 px-3">{aviso.numero_aviso}</td>
+                      <td className="py-2 px-3">{aviso.cliente}</td>
+                      <td className="py-2 px-3 text-right">
+                        S/ {aviso.importe_total.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="border-t border-gray-200">
+                    <td colSpan={2}></td>
+                    <td className="py-2 px-3 text-right font-semibold">
+                      Total: S/ {total.toFixed(2)}
                     </td>
                   </tr>
-                ))}
-                <tr className="border-t border-gray-200">
-                  <td colSpan={2}></td>
-                  <td className="py-2 px-3 text-right font-semibold">
-                    Total: S/ {total.toFixed(2)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            )}
           </div>
 
           {/* Avisos NO migrables */}
@@ -121,13 +129,14 @@ const MigrarAvisosSAP = ({
           {/* Botones */}
           <div className="flex justify-end space-x-3">
             <button
+              disabled={avisosMigrables.length === 0}
               onClick={() =>
                 onConfirm(
                   avisosMigrables.map((aviso) => aviso.numero_aviso),
                   onClose
                 )
               }
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Confirmar y Enviar
             </button>
