@@ -135,6 +135,11 @@ export const DebitNoticeDetailForm = ()=>{
                         <option value="Ti">TI - Infraestructura</option>
                         <option value="Administración">Administración</option>
                         </select>
+
+                        
+                        {formik.errors.centro_costo && (
+                        <p className="text-red-500 text-sm">{formik.errors.centro_costo}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block mb-1 text-sm text-gray-600">Fecha Desde*</label>

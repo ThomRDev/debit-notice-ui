@@ -13,6 +13,7 @@ interface Props {
 
 export const EditDetailDebit = ({ data }: Props) => {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const { toogleEditDebitNotice } = useUI();
   const {id: idUsuario} = useUserManagementStore();
@@ -59,9 +60,19 @@ export const EditDetailDebit = ({ data }: Props) => {
 
     console.log(id,updateData, 'prueba');
     mutate({id, data:updateData});
+    setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/gestion-comercial/avisos-debito");
+      }, 2000);
   }
   return (
     <>
+      {showModal && (
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <p className="text-center text-sm">Aviso modificado correctamente</p>
+      </div>
+    )}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
           <button

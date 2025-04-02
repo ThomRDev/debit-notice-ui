@@ -147,6 +147,12 @@ export const DebitNoticeForm = () => {
               <option value="PEN">SOL (PEN)</option>
               <option value="USD">Dólares (USD)</option>
             </select>
+
+            {formik.errors.moneda && (
+              <p className="text-red-500 text-sm">
+                {formik.errors.moneda}
+              </p>
+            )}
           </div>
           <div>
             <label className="block mb-1 text-sm text-gray-600">Cliente*</label>
@@ -244,6 +250,12 @@ export const DebitNoticeForm = () => {
               <option value="30 DÍAS">30 DÍAS</option>
               <option value="60 DÍAS">60 DÍAS</option>
             </select>
+
+            {formik.errors.condicion_pago && (
+              <p className="text-red-500 text-sm">
+                {formik.errors.condicion_pago}
+              </p>
+            )}
           </div>
           <div>
             <label className="block mb-1 text-sm text-gray-600">Contacto</label>
@@ -270,6 +282,12 @@ export const DebitNoticeForm = () => {
               <option value="BORRADOR">BORRADOR</option>
               <option value="PENDIENTE">PENDIENTE</option>
             </select>
+
+            {formik.errors.estado && (
+              <p className="text-red-500 text-sm">
+                {formik.errors.estado}
+              </p>
+            )}
           </div>
         </div>
         <div>

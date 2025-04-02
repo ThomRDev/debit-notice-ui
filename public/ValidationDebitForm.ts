@@ -23,12 +23,8 @@ export const deviceNoticeSchema = Yup.object().shape({
   condicion_pago: Yup.string()
     .required('Condición de pago es requerida')
     .oneOf(['CONTADO', '30 DÍAS', '60 DÍAS'], 'Condición inválida'),
-
-  cliente: Yup.string()
-    .required('Cliente es requerido'),
     
   estado: Yup.string()
-    .required('Estado es requerida')
     .oneOf(['BORRADOR', 'PENDIENTE', 'MIGRADO', 'ANULADO'], 'Estado inválido'),
     
   observaciones: Yup.string()
