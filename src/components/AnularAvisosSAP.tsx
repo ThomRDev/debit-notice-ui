@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DebitNotice } from "./TableDebit";
 
-interface AnularAvisosSAPProps {
+export interface AnularAvisosSAPProps {
   onClose: () => void;
   onConfirm: (avisos: string[], motivo: string, close: () => void) => void;
   selectedNotices: DebitNotice[];

@@ -59,11 +59,11 @@ export const EditDetailDebit = ({ data }: Props) => {
     }
 
     console.log(id,updateData, 'prueba');
-    mutate({id, data:updateData});
+    //mutate({id, data:updateData});
     setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        navigate("/gestion-comercial/avisos-debito");
+        //navigate("/gestion-comercial/avisos-debito");
       }, 2000);
   }
   return (
