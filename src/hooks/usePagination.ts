@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
-export function usePagination({ totalItems, itemsPerPage = 7 }) {
+export function usePagination({
+  totalItems,
+  itemsPerPage = 7,
+}: {
+  totalItems: number;
+  itemsPerPage?: number;
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -13,7 +19,7 @@ export function usePagination({ totalItems, itemsPerPage = 7 }) {
   const nextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const goToPage = (page) =>
+  const goToPage = (page: number) =>
     setCurrentPage(Math.min(Math.max(page, 1), totalPages));
 
   const startIndex = (currentPage - 1) * itemsPerPage;

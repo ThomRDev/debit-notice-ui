@@ -7,9 +7,6 @@ import {
   FolderArrowDownIcon,
   PrinterIcon,
   PencilSquareIcon,
-  ArrowLeftCircleIcon,
-  ArrowRightIcon,
-  ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import DebtNoticesTableSkeleton from "./DebtNoticesTableSkeleton";

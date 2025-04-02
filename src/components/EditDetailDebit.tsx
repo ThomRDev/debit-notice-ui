@@ -38,7 +38,7 @@ export const EditDetailDebit = ({ data }: Props) => {
 
   const handleClienteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCliente = clientesList.find(
-      (cliente) => cliente.nombre === e.target.value
+      (cliente: any) => cliente.nombre === e.target.value
     );
     setClienteSeleccionado(selectedCliente);
   };
@@ -106,7 +106,9 @@ export const EditDetailDebit = ({ data }: Props) => {
           </label>
           <select
             id="estadoSelect"
-            className={`px-4 py-1 rounded ${estadoColors[estadoAviso]}`}
+            className={`px-4 py-1 rounded ${
+              estadoColors[estadoAviso as keyof typeof estadoColors]
+            }`}
             value={estadoAviso}
             onChange={handleEstadoChange}
           >
