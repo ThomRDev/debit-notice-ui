@@ -59,8 +59,8 @@ export const DebitNoticeDetailForm = ()=>{
                         className="w-full p-2 border rounded border-gray-400"
                         >
                         <option value="">Seleccione un tipo</option>
-                        <option value="Servicios">Servicio</option>
-                        <option value="Otros">Otros</option>
+                        <option value="SERVICIO">SERVICIO</option>
+                        <option value="OTROS">OTROS</option>
                         </select>
 
                         {formik.errors.tipo_concepto && (
@@ -230,7 +230,7 @@ export const DebitNoticeDetailForm = ()=>{
                             {index + 1}
                         </td>
                         <td className="p-3 text-sm text-gray-500">
-                            Anticipo
+                            ANTICIPO
                         </td>
                         <td className="p-3 text-sm text-gray-500">
                             ANT
@@ -254,7 +254,7 @@ export const DebitNoticeDetailForm = ()=>{
                             <tr key={detail.id} className="hover:bg-gray-50">
                                 <td className="p-3 text-sm font-medium text-gray-900">{selectedAdvances.length + index + 1}</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.tipo_concepto}</td>
-                                <td className="p-3 text-sm text-gray-500">DET</td>
+                                <td className="p-3 text-sm text-gray-500">{detail.tipo_concepto== 'SERVICIO'? 'SERV' : 'OTRO'}</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.descripcion_concepto}</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.cantidad}</td>
                                 <td className="p-3 text-sm text-gray-500">{detail.precio_unitario.toFixed(2)}</td>

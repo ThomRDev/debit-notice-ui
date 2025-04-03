@@ -57,7 +57,7 @@ export const DebitNoticeForm = () => {
       };
       const mappedAdvances: DeviceNoticeDetailData[] = selectedAdvances.map(
         (advance) => ({
-          tipo_concepto: "Anticipo",
+          tipo_concepto: "ANTICIPO",
           descripcion_concepto: advance.motivo || "",
           cantidad: 1,
           precio_unitario: advance.importe || 0,
