@@ -30,9 +30,8 @@ export const useDebitNotices = () => {
 
 export const usePutDebitNotice = () => {
   const { mutate, error } = useMutation({
-    mutationFn: (params: { id: number; data: DebitNoticeUpdateData }) =>
+    mutationFn: async (params: { id: number; data: DebitNoticeUpdateData }) =>
       DebitNoticeApi.put_aviso(params.id, params.data),
-    mutationKey: ["update-debit-notice"], 
   });
 
   return { mutate, error };

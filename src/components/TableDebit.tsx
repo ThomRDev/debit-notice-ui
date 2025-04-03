@@ -33,7 +33,7 @@ export const TableDebit = () => {
   const { currentPage, totalPages, goToPage, startIndex, endIndex, pages } =
     usePagination({ totalItems: data?.length });
   const currentPageData = data?.slice(startIndex, endIndex);
-  const { toogleEditDebitNotice } = useUI();
+  const { toogleEditDebitNotice, setIsShowEditDebitNotice } = useUI();
 
   const { openModal } = useModalStore();
   const { id } = useUserManagementStore();
@@ -195,6 +195,7 @@ export const TableDebit = () => {
                     className="size-6 cursor-pointer"
                     title="Ver detalle"
                     onClick={() => {
+                      setIsShowEditDebitNotice(false);
                       navigate(
                         `/gestion-comercial/avisos-debito/${debitNotice.numero_aviso}`
                       );
@@ -207,9 +208,10 @@ export const TableDebit = () => {
                       title="Editar"
                       onClick={() => {
                         toogleEditDebitNotice();
-                        navigate(
-                          `/gestion-comercial/avisos-debito/${debitNotice.numero_aviso}`
-                        );
+                        setTimeout(() => {
+                          setIsShowEditDebitNotice(true);
+                          navigate(`/gestion-comercial/avisos-debito/${debitNotice.numero_aviso}`);
+                        }, 100);
                       }}
                     />
                   )}

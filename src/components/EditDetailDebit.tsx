@@ -6,6 +6,7 @@ import { useClientes } from "../hooks/useClientes";
 import { useUI } from "../store/useUi.store";
 import useUserManagementStore from "../store/useUserManagement.store";
 import { usePutDebitNotice } from "../hooks/useDebitNotices";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   data: any;
@@ -15,6 +16,8 @@ export const EditDetailDebit = ({ data }: Props) => {
   console.log("🚀 ~ EditDetailDebit ~ data:", data);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const queryClient = useQueryClient();
+
 
   const { toogleEditDebitNotice } = useUI();
   const { id: idUsuario } = useUserManagementStore();
@@ -51,6 +54,7 @@ export const EditDetailDebit = ({ data }: Props) => {
   };
 
   const handleEditDebotNotice = () => {
+    if (!data) return;
     const id = data.aviso_debito.id;
     const updateData = {
       observaciones: avisoData.observaciones,
@@ -61,9 +65,15 @@ export const EditDetailDebit = ({ data }: Props) => {
 
     console.log(id, updateData, "prueba");
     mutate({ id, data: updateData });
+
     setShowModal(true);
     setTimeout(() => {
       setShowModal(false);
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          typeof query.queryKey[0] === "string" &&
+          query.queryKey[0].startsWith("debit-notice"),
+      });
       navigate("/gestion-comercial/avisos-debito");
     }, 2000);
   };

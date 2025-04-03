@@ -10,6 +10,7 @@ export const DebitNoticeDetailPage = () => {
   const { data, isLoading } = useDebitNoticeDetail({ nAviso: nAviso! });
   const { isShowEditDebitNotice } = useUI();
 
+  
   if (isLoading) return <DebtNoticeSkeleton />;
   return (
     <div className="container mx-auto px-4">
