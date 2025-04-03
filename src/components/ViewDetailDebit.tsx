@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ArrowLeftIcon,
-  FolderArrowDownIcon,
+  //FolderArrowDownIcon,
   PrinterIcon,
 } from "@heroicons/react/24/outline";
 import capitalize from "capitalize";
@@ -42,6 +42,35 @@ export const ViewDetailDebit = ({ data }: Props) => {
     });
   };
 
+  const printContent = () => {
+    const printWindow = window.open("", "", "width=800,height=600");
+    const content = document.getElementById("printable-content")?.innerHTML;
+    printWindow?.document.write(`
+      <html>
+        <head>
+          <title>Imprimir Detalle</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .no-print {
+              display: none;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Detalle de Aviso de Débito</h2>
+          ${content}
+        </body>
+      </html>
+    `);
+    printWindow?.document.close();
+    printWindow?.focus();
+    printWindow?.print();
+  };
+
+  
   return (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -70,7 +99,7 @@ export const ViewDetailDebit = ({ data }: Props) => {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-lg px-6">
+      <div className="bg-white rounded-lg px-6" id="printable-content">
         <div className="mb-6">
           <h3 className="text-lg font-bold mb-4">AVISO DE DÉBITO</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -254,12 +283,15 @@ export const ViewDetailDebit = ({ data }: Props) => {
             </button>
           )}
 
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
+          <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center no-print"
+          onClick={printContent}>
             <PrinterIcon className="h-4 w-4 mr-2" /> Imprimir
           </button>
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
-            <FolderArrowDownIcon className="h-4 w-4 mr-2" /> Exportar
-          </button>
+          {/*<button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center no-print"
+          onClick={exportToExcel}>
+            <FolderArrowDownIcon className="h-4 w-4 mr-2" 
+            /> Exportar
+          </button>*/}
         </div>
       </div>
     </>

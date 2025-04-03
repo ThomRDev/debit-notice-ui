@@ -42,5 +42,5 @@ export const useDebitNoticeStore = create<Data>()(
         }),
     }),
     { name: "DebitNoticeStore" }
-  ) // El nombre es opcional para las herramientas de desarrollo
+  ) 
 );

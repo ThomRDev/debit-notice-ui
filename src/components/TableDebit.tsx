@@ -4,7 +4,7 @@ import { formatDate } from "../utils/dateUtils";
 
 import {
   EyeIcon,
-  FolderArrowDownIcon,
+  //FolderArrowDownIcon,
   PrinterIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
@@ -99,6 +99,70 @@ export const TableDebit = () => {
         ? prev.filter((notice) => notice.numero_aviso !== deb.numero_aviso)
         : [...prev, deb]
     );
+  };
+
+  const printSelectedNotices = () => {
+    if (selectedNotices.length === 0) {
+      toast("No hay avisos seleccionados para imprimir", {
+        icon: "🚨",
+        duration: 4000,
+      });
+      return;
+    }
+  
+    const printWindow = window.open("", "_blank");
+    const tableContent = selectedNotices.map((debitNotice) => `
+      <tr>
+        <td>${debitNotice.numero_aviso}</td>
+        <td>${formatDate(debitNotice.fecha_emision)}</td>
+        <td>${debitNotice.cliente}</td>
+        <td>${debitNotice.importe_total.toFixed(2)}</td>
+        <td>${debitNotice.numero_sap ?? "-"}</td>
+        <td><span class="${getStatusColor(debitNotice.estado)}">${debitNotice.estado}</span></td>
+      </tr>
+    `).join("");
+  
+    printWindow?.document.write(`
+      <html>
+        <head>
+          <title>Impresión de Avisos Seleccionados</title>
+          <style>
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            th, td {
+              padding: 8px;
+              text-align: left;
+              border-bottom: 1px solid #ddd;
+            }
+            th {
+              background-color: #f4f4f4;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Impresión de Avisos Seleccionados</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>N° Aviso</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Importe</th>
+                <th>N° SAP</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableContent}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow?.document.close();
+    printWindow?.print();
   };
 
   const getStatusColor = (status: string) => {
@@ -267,12 +331,14 @@ export const TableDebit = () => {
             >
               Anular
             </button>
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
+            <button 
+            onClick={() => printSelectedNotices()}
+            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
               <PrinterIcon className="h-4 w-4 mr-2" /> Imprimir
             </button>
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
+            {/** <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm flex items-center">
               <FolderArrowDownIcon className="h-4 w-4 mr-2" /> Exportar
-            </button>
+            </button>*/}
           </div>
 
           <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
